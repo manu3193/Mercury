@@ -16,6 +16,13 @@ public final class TokenTypes {
     public static final TokenTypes ERROR = new TokenTypes("ERROR");
     public static final TokenTypes NUMERIC_DEC = new TokenTypes("NUMERIC_DEC");
     public static final TokenTypes NUMERIC_HEX = new TokenTypes("NUMERIC_HEX");
+    public static final TokenTypes SHARP = new TokenTypes("SHARP");
+    public static final TokenTypes MNEMONIC = new TokenTypes("MNEMONIC");
+    public static final TokenTypes CONDITIONAL_MNEMONIC = new TokenTypes("CONDITIONAL_MNEMONIC");
+    public static final TokenTypes SET_FLAGS = new TokenTypes("SET_FLAGS");
+    public static final TokenTypes NEWLINE = new TokenTypes("NEWLINE");
+    public static final TokenTypes COLON = new TokenTypes("COLON");
+
 
     private String descriptor;
 
