@@ -33,7 +33,7 @@ public class ErrorList {
     }
 
     public void add(ErrorMessage message) {
-        add(message);
+        errorList.add(message);
     }
 
 
