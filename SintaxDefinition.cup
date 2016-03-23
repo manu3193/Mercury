@@ -1,0 +1,6 @@
+//user code 
+package mercury;
+
+//Import tha class java_cip.runtime.*
+import java_cup.runtime.*;
+
