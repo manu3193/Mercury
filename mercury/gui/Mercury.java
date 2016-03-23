@@ -23,6 +23,7 @@ public class Mercury extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("GUI.fxml"));
         Scene scene = new Scene(root, 1024, 675);
+        stage.setTitle("Mercury ARMv4");
         stage.setScene(scene);
         stage.show();
 
