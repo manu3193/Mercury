@@ -8,7 +8,8 @@ public final class TokenTypes {
     public static final TokenTypes COMMENT = new TokenTypes("COMMENT");
     public static final TokenTypes OPERATOR = new TokenTypes("OPERATOR");
     public static final TokenTypes REGISTER = new TokenTypes("REGISTER");
-    public static final TokenTypes LABEL = new TokenTypes("LABEL");
+    public static final TokenTypes SETLABEL = new TokenTypes("SETLABEL");
+    public static final TokenTypes CALLLABEL = new TokenTypes("CALLLABEL");
     public static final TokenTypes COMA = new TokenTypes("COMA");
     public static final TokenTypes RIGHT_PAREN = new TokenTypes("RIGHT_PAREN");
     public static final TokenTypes LEFT_PAREN = new TokenTypes("LEFT_PAREN");
