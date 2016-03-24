@@ -22,7 +22,7 @@ public final class TokenTypes {
     public static final TokenTypes MNEMONIC_SET = new TokenTypes("MNEMONIC_SET");
     public static final TokenTypes MNEMONIC_SET_CONDITIONAL = new TokenTypes("MNEMONIC_SET_CONDITIONAL");
     public static final TokenTypes COMPARE_MNEMONIC = new TokenTypes("COMPARE_MNEMONIC");
-    public static final TokenTypes COMPARE_MNEMONIC_CONDITIONAL = new TokenTypes("COMPARE_MNEMONI_CTIONAL");
+    public static final TokenTypes COMPARE_MNEMONIC_CONDITIONAL = new TokenTypes("COMPARE_MNEMONIC_CONDITIONAL");
     public static final TokenTypes MOVE_MNEMONIC = new TokenTypes("MOVE_MNEMONIC");
     public static final TokenTypes MOVE_MNEMONIC_SET = new TokenTypes("MOVE_MNEMONIC_SET");
     public static final TokenTypes MOVE_MNEMONIC_CONDITIONAL = new TokenTypes("MOVE_MNEMONIC_CONDITIONAL");
