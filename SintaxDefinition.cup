@@ -62,7 +62,7 @@ import java.io.FileReader;
         Terminales que no tienen un valor son listados primero, los terminales que
         tienen un valor como los enteros son listados en la segunda o demas lineas. */
      terminal        newline, comma, leftpar, rightpar, sharp;
-     terminal String setlabel, comment, register, branch, callabel, mnemonic, conditionalmnemonic, mnemonicset, mnemonicsetconditional, compare, compareconditional, move, conditionalmove, moveset, movesetconditional, mla, mlaconditional, mlaset, mlasetconditional, memorymnemonic, memorymnemonicconditional, hex, num;
+     terminal String setlabel, comment, register, branch, calllabel, mnemonic, conditionalmnemonic, mnemonicset, mnemonicsetconditional, compare, compareconditional, move, conditionalmove, moveset, movesetconditional, mla, mlaconditional, mlaset, mlasetconditional, memorymnemonic, memorymnemonicconditional, hex, num;
 
      /* No terminales usados en la seccion gramatical
 
