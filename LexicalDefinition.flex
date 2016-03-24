@@ -103,10 +103,9 @@ class Yytoken {
         SPACE=[ \t]
         NEWLINE=\n|\r|\r\n
 	DELIMITER={SPACE}|{NEWLINE}
-        SETLABEL= ((([a-zA-Z])+([0-9])*)\:?{NEWLINE})*
+        SETLABEL= ((([a-zA-Z])+([0-9])*)\:)*
         CALLLABEL= ([a-zA-Z])+([0-9])*
-	COMMENT=;.*
-
+	COMMENT= ;(\S|[ \t])*\n
 	MNEMONIC=AND|EOR|SUB|RSB|ADD|ADC|SBC|RSC|ORR|LSL|ASR|RRX|ROR|BIC|MUL
 	CONDITIONAL_SUFFIX=EQ|NE|CS|HS|CC|LO|MI|PL|VS|VC|HI|LS|GE|LT|GT|LE|AL
 	MNEMONIC_CONDITIONAL={MNEMONIC}{CONDITIONAL_SUFFIX}
@@ -138,133 +137,156 @@ class Yytoken {
 
     {NUMERIC_DEC}    { 
                       tokenList.add(new Token(tokenTypes.NUMERIC_DEC,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
 		              return symbol(sym.num, yytext());
 		     }
 
     {NUMERIC_HEX}      { 
                         tokenList.add(new Token(tokenTypes.NUMERIC_HEX,yytext(),sourceLine,yycolumn));
+                        System.out.println(yytext());
                         return symbol(sym.hex, yytext());
                        }
                      
     {REGISTER}      { 
                       tokenList.add(new Token(tokenTypes.REGISTER,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
                       return symbol(sym.register, yytext());
                     }
 		      
      {COMMENT}      { 
                       tokenList.add(new Token(tokenTypes.COMMENT,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
                       return symbol(sym.comment, yytext());
                     }
 
      {SETLABEL}      {
                       tokenList.add(new Token(tokenTypes.SETLABEL,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
                       return symbol(sym.setlabel, yytext());
                      }
 
     "["              {
                       tokenList.add(new Token(tokenTypes.LEFT_PAREN,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
                       return symbol(sym.leftpar, yytext());
                      }
 
     "]"              {
                       tokenList.add(new Token(tokenTypes.RIGHT_PAREN,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
                       return symbol(sym.rightpar, yytext());
 		     }
 
     ","              {
                       tokenList.add(new Token(tokenTypes.COMA,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
                       return symbol(sym.comma, yytext());
 		     }
 
     "#"              {
                       tokenList.add(new Token(tokenTypes.SHARP,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
                       return symbol(sym.sharp, yytext());
 		     }
-
-
-
     {MNEMONIC}        {
                       tokenList.add(new Token(tokenTypes.MNEMONIC,yytext(),sourceLine,yycolumn));
+                      System.out.println(yytext());
                       return symbol(sym.mnemonic, yytext());
                       }
     
     {MNEMONIC_CONDITIONAL}       {
                      		  tokenList.add(new Token(tokenTypes.MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
+                     		  System.out.println(yytext());
                                   return symbol(sym.conditionalmnemonic, yytext());
                    	         }
 
     {MNEMONIC_SET}     		 {
                      		  tokenList.add(new Token(tokenTypes.MNEMONIC_SET,yytext(),sourceLine,yycolumn));
+                     		  System.out.println(yytext());
                                   return symbol(sym.mnemonicset, yytext());
                    	         }
 
     {MNEMONIC_SET_CONDITIONAL}   {
                      		  tokenList.add(new Token(tokenTypes.MNEMONIC_SET_CONDITIONAL,yytext(),sourceLine,yycolumn));
+                     		  System.out.println(yytext());
                                   return symbol(sym.mnemonicsetconditional, yytext());
                    	         }
 
     {COMPARE_MNEMONIC}           {
                      		  tokenList.add(new Token(tokenTypes.COMPARE_MNEMONIC,yytext(),sourceLine,yycolumn));
+                     		  System.out.println(yytext());
                                   return symbol(sym.compare, yytext());
                    	         }
 
     {COMPARE_MNEMONIC_CONDITIONAL}           {
                      		              tokenList.add(new Token(tokenTypes.COMPARE_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
+                     		              System.out.println(yytext());
                                               return symbol(sym.compareconditional, yytext());
                    	                     }
 
     {MOVE_MNEMONIC}           {
                                tokenList.add(new Token(tokenTypes.MOVE_MNEMONIC,yytext(),sourceLine,yycolumn));
+                               System.out.println(yytext());
                                return symbol(sym.move, yytext());
                               }
 
     {MOVE_MNEMONIC_SET}   {
                            tokenList.add(new Token(tokenTypes.MOVE_MNEMONIC_SET,yytext(),sourceLine,yycolumn));
+                           System.out.println(yytext());
                            return symbol(sym.moveset, yytext());
                           }
 
     {MOVE_MNEMONIC_CONDITIONAL}       {
                                        tokenList.add(new Token(tokenTypes.MOVE_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
+                                       System.out.println(yytext());
                                        return symbol(sym.conditionalmove, yytext());
                                       }
 
     {MOVE_MNEMONIC_SET_CONDITIONAL}   {
                                        tokenList.add(new Token(tokenTypes.MOVE_MNEMONIC_SET_CONDITIONAL,yytext(),sourceLine,yycolumn));
+                                       System.out.println(yytext());
                                        return symbol(sym.movesetconditional, yytext());
                                       }
 
     {MLA_MNEMONIC}          {
                              tokenList.add(new Token(tokenTypes.MLA_MNEMONIC,yytext(),sourceLine,yycolumn));
+                             System.out.println(yytext());
                              return symbol(sym.mla, yytext());
                             }
 
     {MLA_MNEMONIC_SET}      {
                              tokenList.add(new Token(tokenTypes.MLA_MNEMONIC_SET,yytext(),sourceLine,yycolumn));
+                             System.out.println(yytext());
                              return symbol(sym.mlaset, yytext());
                             }
 
     {MLA_MNEMONIC_CONDITIONAL}       {
                                       tokenList.add(new Token(tokenTypes.MLA_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
+                                      System.out.println(yytext());
                                       return symbol(sym.mlaconditional, yytext());
                                      }
 
     {MLA_MNEMONIC_SET_CONDITIONAL}   {
                                       tokenList.add(new Token(tokenTypes.MLA_MNEMONIC_SET_CONDITIONAL,yytext(),sourceLine,yycolumn));
+                                      System.out.println(yytext());
                                       return symbol(sym.mlasetconditional, yytext());
                                      }
 
     {MEMORY_MNEMONIC}      {
                              tokenList.add(new Token(tokenTypes.MEMORY_MNEMONIC,yytext(),sourceLine,yycolumn));
+                             System.out.println(yytext());
                              return symbol(sym.memorymnemonic, yytext());
                            }
 
     {MEMORY_MNEMONIC_CONDITIONAL}       {
-                                         tokenList.add(new Token(tokenTypes.MEMORY_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn)); 
+                                         tokenList.add(new Token(tokenTypes.MEMORY_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
+                                         System.out.println(yytext());
                                          return symbol(sym.memorymnemonicconditional, yytext());
                                         }
 
     {BRANCH_MNEMONIC}      {
                             tokenList.add(new Token(tokenTypes.BRANCH_MNEMONIC,yytext(),sourceLine,yycolumn));
+                            System.out.println(yytext());
                             return symbol(sym.branch, yytext());
                            }
  
@@ -273,11 +295,13 @@ class Yytoken {
 
     {NEWLINE} 	  {
 	           tokenList.add(new Token(tokenTypes.NEWLINE,yytext(),sourceLine,yycolumn));
+	           System.out.println(yytext());
                    return symbol(sym.newline,yytext());
                   }
 
     {CALLLABEL}   {
                    tokenList.add(new Token(tokenTypes.CALLED_LABEL,yytext(),sourceLine,yycolumn));
+                   System.out.println(yytext());
                    return symbol(sym.calllabel, yytext());
                   }
 }

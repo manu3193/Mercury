@@ -70,8 +70,8 @@ import java.io.FileReader;
         se lista los no terminales que tienen un entero. Un Object se refiere a que
         no tienen tipo, pudiendo ser entero o String. */
 
-     non terminal Object     PROGRAM, INSTRUCTION, DATAPROCESSING, MEMORY, DPADDR, RELATIVEADDR, CMVADDR, MLAADDR;
-     non terminal String     BRANCH, NORMALADDR, DPMNEMONIC, CMPMNEMONIC, MVMNEMONIC, MLAMNEMONIC, MEMMNEMONIC, IMMEDIATE;
+     non terminal Object     PROGRAM, STATEMENT, INSTRUCTION, DATAPROCESSING, MEMORY, DPADDR, RELATIVEADDR, CMVADDR, MLAADDR;
+     non terminal String     NORMALADDR, DPMNEMONIC, CMPMNEMONIC, MVMNEMONIC, MLAMNEMONIC, MEMMNEMONIC, IMMEDIATE;
 
      /* ------------------- Seccion de la gramatica ------------------------ */
 /**
@@ -98,47 +98,50 @@ import java.io.FileReader;
      IMMEDIATE -> sharp hex | sharp num
   */
 
+         /*
+           PROGRAM ::=  PROGRAM setlabel INSTRUCTION comment INSTRUCTION | setlabel INSTRUCTION comment INSTRUCTION|
+           INSTRUCTION comment INSTRUCTION| INSTRUCTION newline | INSTRUCTION comment | error newline INSTRUCTION;
+           INSTRUCTION ::=  DATAPROCESSING | MEMORY | BRANCH;
+           DATAPROCESSING ::= DPMNEMONIC DPADDR | CMPMNEMONIC CMVADDR | MVMNEMONIC CMVADDR |
+                                  MLAMNEMONIC MLAADDR;
+           MEMORY ::= MEMMNEMONIC register comma RELATIVEADDR;
+                BRANCH ::= branch calllabel;
+                DPADDR ::= NORMALADDR comma register | NORMALADDR comma IMMEDIATE |
+                               NORMALADDR comma RELATIVEADDR;
+                NORMALADDR ::= register comma register;
+                RELATIVEADDR ::= leftpar register comma IMMEDIATE rightpar | leftpar register rightpar |
+                               leftpar NORMALADDR rightpar;
+                CMVADDR ::= NORMALADDR | register comma IMMEDIATE;
+                MLAADDR ::= NORMALADDR comma NORMALADDR | NORMALADDR comma register comma IMMEDIATE;
+                DPMNEMONIC ::= mnemonic | conditionalmnemonic | mnemonicset | mnemonicsetconditional;
+                CMPMNEMONIC ::= compare | compareconditional;
+                MVMNEMONIC ::= move | conditionalmove | moveset | movesetconditional;
+                MLAMNEMONIC ::= mla | mlaconditional | mlaset | mlasetconditional;
+                MEMMNEMONIC ::= memorymnemonic | memorymnemonicconditional;
+                IMMEDIATE ::= sharp hex | sharp num;
+         */
+
   start with PROGRAM;
 
-  PROGRAM ::= setlabel comment newline
-  {:
-                      System.out.println(" Ingresa en setlabel ");
-                    :}| comment newline
-                    {:
-                                          System.out.println(" Ingresa en comment ");
-                                        :}
 
-                    | INSTRUCTION {:
-                                                                            System.out.println(" Ingresa en instComment ");
-                                                                          :}
-                                                                          comment newline
-                    | INSTRUCTION
-                     {:
-                                                               System.out.println(" Ingresa en instNewline ");
-                                                             :}
-
-
-                     newline | error
-
-                      {:
-                                                                System.out.println(" Ingresa en error ");
-                                                              :}
-                      newline INSTRUCTION;
-  INSTRUCTION ::= DATAPROCESSING | MEMORY | BRANCH;
+  PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
+  STATEMENT::=   setlabel comment | setlabel newline| INSTRUCTION newline | INSTRUCTION comment | newline |
+                 error newline STATEMENT;
+  INSTRUCTION ::=  DATAPROCESSING | MEMORY | branch calllabel;
   DATAPROCESSING ::= DPMNEMONIC DPADDR | CMPMNEMONIC CMVADDR | MVMNEMONIC CMVADDR |
                          MLAMNEMONIC MLAADDR;
   MEMORY ::= MEMMNEMONIC register comma RELATIVEADDR;
-       BRANCH ::= branch calllabel;
-       DPADDR ::= NORMALADDR comma register | NORMALADDR comma IMMEDIATE |
-                      NORMALADDR comma RELATIVEADDR;
-       NORMALADDR ::= register comma register;
-       RELATIVEADDR ::= leftpar register comma IMMEDIATE rightpar | leftpar register rightpar |
-                      leftpar NORMALADDR rightpar;
-       CMVADDR ::= NORMALADDR | register comma IMMEDIATE;
-       MLAADDR ::= NORMALADDR comma NORMALADDR | NORMALADDR comma register comma IMMEDIATE;
-       DPMNEMONIC ::= mnemonic | conditionalmnemonic | mnemonicset | mnemonicsetconditional;
-       CMPMNEMONIC ::= compare | compareconditional;
-       MVMNEMONIC ::= move | conditionalmove | moveset | movesetconditional;
-       MLAMNEMONIC ::= mla | mlaconditional | mlaset | mlasetconditional;
-       MEMMNEMONIC ::= memorymnemonic | memorymnemonicconditional;
-       IMMEDIATE ::= sharp hex | sharp num;
+  DPADDR ::= NORMALADDR comma register | NORMALADDR comma IMMEDIATE |
+             NORMALADDR comma RELATIVEADDR;
+  NORMALADDR ::= register comma register;
+  RELATIVEADDR ::= leftpar register comma IMMEDIATE rightpar | leftpar register rightpar |
+                   leftpar NORMALADDR rightpar;
+  CMVADDR ::= NORMALADDR | register comma IMMEDIATE;
+  MLAADDR ::= NORMALADDR comma NORMALADDR | NORMALADDR comma register comma IMMEDIATE;
+  DPMNEMONIC ::= mnemonic | conditionalmnemonic | mnemonicset | mnemonicsetconditional;
+  CMPMNEMONIC ::= compare | compareconditional;
+  MVMNEMONIC ::= move | conditionalmove | moveset | movesetconditional;
+  MLAMNEMONIC ::= mla | mlaconditional | mlaset | mlasetconditional;
+  MEMMNEMONIC ::= memorymnemonic | memorymnemonicconditional;
+  IMMEDIATE ::= sharp hex | sharp num;
+
