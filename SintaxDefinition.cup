@@ -125,7 +125,7 @@ import java.io.FileReader;
 
 
   PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
-  STATEMENT::=   setlabel comment | setlabel newline| INSTRUCTION newline | INSTRUCTION comment | newline |
+  STATEMENT::=   setlabel comment | setlabel newline| INSTRUCTION newline | INSTRUCTION comment | newline | comment |
                  error newline STATEMENT;
   INSTRUCTION ::=  DATAPROCESSING | MEMORY | branch calllabel;
   DATAPROCESSING ::= DPMNEMONIC DPADDR | CMPMNEMONIC CMVADDR | MVMNEMONIC CMVADDR |
