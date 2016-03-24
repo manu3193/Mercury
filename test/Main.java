@@ -5,8 +5,9 @@ package test;
  */
 
 import mercury.ErrorList;
-import mercury.LexicalAnalysis;
+import mercury.SyntaxAnalysis;
 import mercury.arm.assembler.TokenList;
+import mercury.LexicalAnalysis;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -53,18 +54,19 @@ public class Main {
                     } else {
                         System.out.println("\n*** Procesando archivo default ***\n");
                         archLexico = "LexicalDefinition.flex";
-                       // archSintactico = "asintactico.cup";
+                        archSintactico = "SintaxDefinition.cup";
                     }
                     String[] alexico = {archLexico};
+                    String[] asintactico = {"-parser", "SyntaxAnalysis", archSintactico};
                     jflex.Main.main(alexico);
                     try {
-                       // java_cup.Main.main(asintactico);
+                       java_cup.Main.main(asintactico);
                     } catch (Exception ex) {
                         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     //movemos los archivos generados
                     boolean mvAL = moverArch("LexicalAnalysis.java");
-                    boolean mvAS = moverArch("AnalizadorSintactico.java");
+                    boolean mvAS = moverArch("SyntaxAnalysis.java");
                     boolean mvSym= moverArch("sym.java");
                     if(mvAL && mvAS && mvSym){
                         System.exit(0);
@@ -77,8 +79,9 @@ public class Main {
                     // sobre un archivo de pruebas.
 
                     String entrada = "program.arm4";
-                    // AnalizadorSintactico.main(archivoPrueba);
-                  try {
+                    String[] caca = {entrada};
+                     SyntaxAnalysis.main(caca);
+                  /*try {
                         BufferedReader bf = null;
                         bf = new BufferedReader(new FileReader(entrada));
                         LexicalAnalysis a = new LexicalAnalysis(bf);
@@ -92,7 +95,7 @@ public class Main {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                     System.out.println("Ejecutado!");
                     break;
                 }
