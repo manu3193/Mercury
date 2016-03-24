@@ -4,9 +4,26 @@ package mercury;
 import mercury.arm.assembler.TokenTypes;
 import mercury.arm.assembler.Token;
 import mercury.arm.assembler.TokenList;
+import mercury.LexicalAnalysis;
 import java_cup.runtime.*;
 
 
+//Class to represent internal parser tokens
+class Yytoken {
+    Yytoken (String type, String value, int line, int pos){
+        //String of the token
+        this.value = value;
+        //Type of the token
+        this.type = type;
+        //Position of token in the given line
+        this.pos = pos;
+    }
+    //Atributes
+    public String value;
+    public String type;
+    public int pos;
+    public int line;
+}
 /* JFlex options and declarations */
 %% //Beginning of options
 
@@ -21,12 +38,15 @@ import java_cup.runtime.*;
 
 
 //Activate compatibility with cup sintaX analizer
-//%cup
+%cup
+%cupdebug
 
 //Activate line and column counter
 %column
 %line
 %ignorecase
+
+
 
 //Beginning of java code
 %{
@@ -37,11 +57,11 @@ import java_cup.runtime.*;
 	private int sourceLine;
 	
 	private Symbol symbol(int type) {
-	    return new Symbol(type, sourceLine, yycolumn);
+	    return new Symbol(type, yyline, yycolumn);
 	}
         
         private Symbol symbol(int type, String value) {
-        return new Symbol(type, sourceLine, yycolumn, value);
+        return new Symbol(type, yyline, yycolumn, value);
         }
 
 	public ErrorList getErrors(){
@@ -118,143 +138,134 @@ import java_cup.runtime.*;
 
     {NUMERIC_DEC}    { 
                       tokenList.add(new Token(tokenTypes.NUMERIC_DEC,yytext(),sourceLine,yycolumn));
-		      //return symbol(sym.NUMERIC_DEC, yytext());  
+		              return symbol(sym.num, yytext());
 		     }
 
     {NUMERIC_HEX}      { 
                         tokenList.add(new Token(tokenTypes.NUMERIC_HEX,yytext(),sourceLine,yycolumn));
-                        //return symbol(sym.NUMERIC_HEX, yytext());  
+                        return symbol(sym.hex, yytext());
                        }
                      
     {REGISTER}      { 
                       tokenList.add(new Token(tokenTypes.REGISTER,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.REGISTER, yytext());  
+                      return symbol(sym.register, yytext());
                     }
 		      
      {COMMENT}      { 
                       tokenList.add(new Token(tokenTypes.COMMENT,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.COMMENT, yytext());  
+                      return symbol(sym.comment, yytext());
                     }
 
      {SETLABEL}      {
                       tokenList.add(new Token(tokenTypes.SETLABEL,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.SETLABEL, yytext());  
+                      return symbol(sym.setlabel, yytext());
                      }
 
     "["              {
                       tokenList.add(new Token(tokenTypes.LEFT_PAREN,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.LEFT_PAREN, yytext());  
+                      return symbol(sym.leftpar, yytext());
                      }
 
     "]"              {
                       tokenList.add(new Token(tokenTypes.RIGHT_PAREN,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.RIGHT_PAREN, yytext());  
-		     }
-
-    "-"              {
-                      tokenList.add(new Token(tokenTypes.MINUS,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.MINUS, yytext());  
+                      return symbol(sym.rightpar, yytext());
 		     }
 
     ","              {
                       tokenList.add(new Token(tokenTypes.COMA,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.COMA, yytext()); 
+                      return symbol(sym.comma, yytext());
 		     }
 
     "#"              {
                       tokenList.add(new Token(tokenTypes.SHARP,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.SHARP, yytext()); 
+                      return symbol(sym.sharp, yytext());
 		     }
 
-    ":"              {
-                      tokenList.add(new Token(tokenTypes.COLON,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.COLON, yytext()); 
-		     }
-    
+
 
     {MNEMONIC}        {
                       tokenList.add(new Token(tokenTypes.MNEMONIC,yytext(),sourceLine,yycolumn));
-                      //return symbol(sym.MNEMONIC, yytext()); 
+                      return symbol(sym.mnemonic, yytext());
                       }
     
     {MNEMONIC_CONDITIONAL}       {
                      		  tokenList.add(new Token(tokenTypes.MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
-                                  //return symbol(sym.MNEMONIC_CONDITIONAL, yytext()); 
+                                  return symbol(sym.conditionalmnemonic, yytext());
                    	         }
 
     {MNEMONIC_SET}     		 {
                      		  tokenList.add(new Token(tokenTypes.MNEMONIC_SET,yytext(),sourceLine,yycolumn));
-                                  //return symbol(sym.MNEMONIC_SET, yytext()); 
+                                  return symbol(sym.mnemonicset, yytext());
                    	         }
 
     {MNEMONIC_SET_CONDITIONAL}   {
                      		  tokenList.add(new Token(tokenTypes.MNEMONIC_SET_CONDITIONAL,yytext(),sourceLine,yycolumn));
-                                  //return symbol(sym.MNEMONIC_SET_CONDITIONAL, yytext()); 
+                                  return symbol(sym.mnemonicsetconditional, yytext());
                    	         }
 
     {COMPARE_MNEMONIC}           {
                      		  tokenList.add(new Token(tokenTypes.COMPARE_MNEMONIC,yytext(),sourceLine,yycolumn));
-                                  //return symbol(sym.COMPARE_MNEMONIC, yytext()); 
+                                  return symbol(sym.compare, yytext());
                    	         }
 
     {COMPARE_MNEMONIC_CONDITIONAL}           {
                      		              tokenList.add(new Token(tokenTypes.COMPARE_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
-                                              //return symbol(sym.COMPARE_MNEMONIC_CONDITIONAL, yytext()); 
+                                              return symbol(sym.compareconditional, yytext());
                    	                     }
 
     {MOVE_MNEMONIC}           {
                                tokenList.add(new Token(tokenTypes.MOVE_MNEMONIC,yytext(),sourceLine,yycolumn));
-                               //return symbol(sym.MOVE_MNEMONIC, yytext()); 
+                               return symbol(sym.move, yytext());
                               }
 
     {MOVE_MNEMONIC_SET}   {
                            tokenList.add(new Token(tokenTypes.MOVE_MNEMONIC_SET,yytext(),sourceLine,yycolumn));
-                           //return symbol(sym.MOVE_MNEMONIC_SET, yytext()); 
+                           return symbol(sym.moveset, yytext());
                           }
 
     {MOVE_MNEMONIC_CONDITIONAL}       {
                                        tokenList.add(new Token(tokenTypes.MOVE_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
-                                       //return symbol(sym.MOVE_MNEMONIC_CONDITIONAL, yytext()); 
+                                       return symbol(sym.conditionalmove, yytext());
                                       }
 
     {MOVE_MNEMONIC_SET_CONDITIONAL}   {
                                        tokenList.add(new Token(tokenTypes.MOVE_MNEMONIC_SET_CONDITIONAL,yytext(),sourceLine,yycolumn));
-                                       //return symbol(sym.MOVE_MNEMONIC_SET_CONDITIONAL, yytext()); 
+                                       return symbol(sym.movesetconditional, yytext());
                                       }
 
     {MLA_MNEMONIC}          {
                              tokenList.add(new Token(tokenTypes.MLA_MNEMONIC,yytext(),sourceLine,yycolumn));
-                             //return symbol(sym.MLA_MNEMONIC, yytext()); 
+                             return symbol(sym.mla, yytext());
                             }
 
     {MLA_MNEMONIC_SET}      {
                              tokenList.add(new Token(tokenTypes.MLA_MNEMONIC_SET,yytext(),sourceLine,yycolumn));
-                             //return symbol(sym.MLA_MNEMONIC_SET, yytext()); 
+                             return symbol(sym.mlaset, yytext());
                             }
 
     {MLA_MNEMONIC_CONDITIONAL}       {
                                       tokenList.add(new Token(tokenTypes.MLA_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn));
-                                      //return symbol(sym.MLA_MNEMONIC_CONDITIONAL, yytext()); 
+                                      return symbol(sym.mlaconditional, yytext());
                                      }
 
     {MLA_MNEMONIC_SET_CONDITIONAL}   {
                                       tokenList.add(new Token(tokenTypes.MLA_MNEMONIC_SET_CONDITIONAL,yytext(),sourceLine,yycolumn));
-                                      //return symbol(sym.MLA_MNEMONIC_SET_CONDITIONAL, yytext()); 
+                                      return symbol(sym.mlasetconditional, yytext());
                                      }
 
     {MEMORY_MNEMONIC}      {
                              tokenList.add(new Token(tokenTypes.MEMORY_MNEMONIC,yytext(),sourceLine,yycolumn));
-                             //return symbol(sym.MEMORY_MNEMONIC, yytext()); 
+                             return symbol(sym.memorymnemonic, yytext());
                            }
 
     {MEMORY_MNEMONIC_CONDITIONAL}       {
                                          tokenList.add(new Token(tokenTypes.MEMORY_MNEMONIC_CONDITIONAL,yytext(),sourceLine,yycolumn)); 
-                                         //return symbol(sym.MEMORY_MNEMONIC_CONDITIONAL, yytext()); 
+                                         return symbol(sym.memorymnemonicconditional, yytext());
                                         }
 
     {BRANCH_MNEMONIC}      {
                             tokenList.add(new Token(tokenTypes.BRANCH_MNEMONIC,yytext(),sourceLine,yycolumn));
-                            //return symbol(sym.BRANCH_MNEMONIC, yytext()); 
+                            return symbol(sym.branch, yytext());
                            }
  
     /* No hace nada si encuentra el espacio en blanco */
@@ -262,12 +273,12 @@ import java_cup.runtime.*;
 
     {NEWLINE} 	  {
 	           tokenList.add(new Token(tokenTypes.NEWLINE,yytext(),sourceLine,yycolumn));
-                   //return symbol(sym.NEWLINE,yytext()); 
+                   return symbol(sym.newline,yytext());
                   }
 
     {CALLLABEL}   {
                    tokenList.add(new Token(tokenTypes.CALLED_LABEL,yytext(),sourceLine,yycolumn));
-                   //return symbol(sym.CALLED_LABEL, yytext()); 
+                   return symbol(sym.calllabel, yytext());
                   }
 }
 

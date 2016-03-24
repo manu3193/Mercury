@@ -11,9 +11,9 @@ import java.io.FileReader;
         Se agrega el manejo de errores. */
     parser code {:
         @Override
-        public void syntax_error(Symbol sy{
-                report_error("Error de sintaxis. Linea: " + (s.right + 1) +
-                " Columna: " + s.left + ". Texto: " + s.value + " ", null);
+        public void syntax_error(Symbol sy){
+                report_error("Error de sintaxis. Linea: " + (sy.left + 1) +
+                " Columna: " + sy.right + ". Texto: " + sy.value + " ", null);
       }
 
         /* Reporte de error encontrado. */
@@ -45,7 +45,7 @@ import java.io.FileReader;
         */
         public static void main(String[] args){
             try {
-                SyntacticAnalysis synAnalysis = new SyntacticAnalysis(
+                SyntaxAnalysis synAnalysis = new SyntaxAnalysis(
                         new LexicalAnalysis( new FileReader(args[0])));
                 Object result = synAnalysis.parse().value;
                 System.out.println("\n*** Syntactic analysis final results ***");
@@ -100,7 +100,30 @@ import java.io.FileReader;
 
   start with PROGRAM;
 
-  PROGRAM ::= setlabel comment | comment | INSTRUCTION comment | INSTRUCTION newline;
+  PROGRAM ::= setlabel comment newline
+  {:
+                      System.out.println(" Ingresa en setlabel ");
+                    :}| comment newline
+                    {:
+                                          System.out.println(" Ingresa en comment ");
+                                        :}
+
+                    | INSTRUCTION {:
+                                                                            System.out.println(" Ingresa en instComment ");
+                                                                          :}
+                                                                          comment newline
+                    | INSTRUCTION
+                     {:
+                                                               System.out.println(" Ingresa en instNewline ");
+                                                             :}
+
+
+                     newline | error
+
+                      {:
+                                                                System.out.println(" Ingresa en error ");
+                                                              :}
+                      newline INSTRUCTION;
   INSTRUCTION ::= DATAPROCESSING | MEMORY | BRANCH;
   DATAPROCESSING ::= DPMNEMONIC DPADDR | CMPMNEMONIC CMVADDR | MVMNEMONIC CMVADDR |
                          MLAMNEMONIC MLAADDR;
@@ -115,7 +138,7 @@ import java.io.FileReader;
        MLAADDR ::= NORMALADDR comma NORMALADDR | NORMALADDR comma register comma IMMEDIATE;
        DPMNEMONIC ::= mnemonic | conditionalmnemonic | mnemonicset | mnemonicsetconditional;
        CMPMNEMONIC ::= compare | compareconditional;
-       MVMNEMONIC ::= move | condidionalmove | moveset | movesetconditional;
+       MVMNEMONIC ::= move | conditionalmove | moveset | movesetconditional;
        MLAMNEMONIC ::= mla | mlaconditional | mlaset | mlasetconditional;
        MEMMNEMONIC ::= memorymnemonic | memorymnemonicconditional;
        IMMEDIATE ::= sharp hex | sharp num;
