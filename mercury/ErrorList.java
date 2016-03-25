@@ -9,7 +9,6 @@ public class ErrorList {
 
     private ArrayList<ErrorMessage> errorList;
     private int errorCount;
-    public static final String ERROR_MESSAGE_PREFIX = "Error";
     public static final String FILENAME_PREFIX = " in ";
     public static final String LINE_PREFIX = " line ";
     public static final String POSITION_PREFIX = " column ";
@@ -20,12 +19,12 @@ public class ErrorList {
         this.errorCount = 0;
     }
 
-    public ArrayList<ErrorMessage> getErrorMessages() {
+    public ArrayList<ErrorMessage> getErrors() {
         return errorList;
     }
 
     public int getNumberErrors() {
-        return errorCount;
+        return errorList.size();
     }
 
     public boolean errorsOccurred() {
@@ -36,13 +35,22 @@ public class ErrorList {
         errorList.add(message);
     }
 
+    public ErrorList append(ErrorList listToAppend){
+        if(listToAppend.getNumberErrors()>0){
+            for(ErrorMessage mess: listToAppend.getErrors()){
+                this.add(mess);
+            }
+        }
+        return this;
+    }
+
 
     public String generateReport() {
         StringBuffer report = new StringBuffer("");
         String reportLine;
         for (int i = 0; i < errorList.size(); i++) {
             ErrorMessage mess = errorList.get(i);
-            reportLine = ERROR_MESSAGE_PREFIX + FILENAME_PREFIX;
+            reportLine = mess.getType() + FILENAME_PREFIX;
             if (mess.getLine() > 0)
                 reportLine = reportLine + LINE_PREFIX + mess.getLine();
             if (mess.getPos() > 0)
