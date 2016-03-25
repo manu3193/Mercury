@@ -10,10 +10,28 @@ import java.io.FileReader;
     /* Codigo del parser, se copia integramente a la clase final.
         Se agrega el manejo de errores. */
     parser code {:
-        @Override
-        public void syntax_error(Symbol sy){
+
+     //Miembro de la clase que contiene los errores del programa
+     private ErrorList errorList;
+
+     public void initErrorList(){
+     this.errorList = new ErrorList();
+     }
+
+     public ErrorList getErrorList(){
+        return errorList;
+     }
+
+@Override
+     public void syntax_error(Symbol sy){
                 report_error("Error de sintaxis. Linea: " + (sy.left + 1) +
                 " Columna: " + sy.right + ". Texto: " + sy.value + " ", null);
+                addError("", ErrorType.SYNTACTIC_ERROR,sy.left + 1,sy.right + 1);
+      }
+
+      //Metodo que ingresa los errores a la lista de errores del programa
+      public void addError(String message, String type,int line, int column){
+        errorList.add(new ErrorMessage(line, column, message, type));
       }
 
         /* Reporte de error encontrado. */
@@ -39,20 +57,7 @@ import java.io.FileReader;
             System.exit(1);
         }
 
-        /*
-        This method assures the execution of both analysis, lexical and syntactic. Besides, symbols generated in the first
-        stage are taken into account in the next analysis.
-        */
-        public static void main(String[] args){
-            try {
-                SyntaxAnalysis synAnalysis = new SyntaxAnalysis(
-                        new LexicalAnalysis( new FileReader(args[0])));
-                Object result = synAnalysis.parse().value;
-                System.out.println("\n*** Syntactic analysis final results ***");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+
 
 :}
      /* ------------Declaracion de simbolos terminales y no terminales---------- */
