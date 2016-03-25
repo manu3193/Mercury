@@ -31,6 +31,7 @@ public class Main {
     public static void main(String[] args) {
         java.util.Scanner in = new Scanner(System.in);
         int valor = 0;
+        ErrorList errorList;
         do {
             System.out.println("Elija una opcion: ");
             System.out.println("1) Generar");
@@ -80,22 +81,22 @@ public class Main {
 
                     String entrada = "program.arm4";
                     String[] caca = {entrada};
-                     SyntaxAnalysis.main(caca);
-                  /*try {
-                        BufferedReader bf = null;
-                        bf = new BufferedReader(new FileReader(entrada));
-                        LexicalAnalysis a = new LexicalAnalysis(bf);
-                        a.yylex();
+                    try {
+                        LexicalAnalysis lexicalAnalysis= new LexicalAnalysis( new FileReader(entrada));
+                        SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
+                        synAnalysis.initErrorList();
+                        Object result = synAnalysis.parse().value;
+                        errorList = lexicalAnalysis.getErrorList();
+                        errorList.append(synAnalysis.getErrorList());
 
-                        TokenList tokens = a.getTokens();
-                        ErrorList errores = a.getErrors();
-                        System.out.println(tokens.toString());
-                        System.out.println(errores.generateReport());
+
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }*/
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     System.out.println("Ejecutado!");
                     break;
                 }
