@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
-<?import javafx.scene.paint.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.collections.FXCollections?>
+
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mercury.gui.GUIController">
     <top>
@@ -46,7 +43,7 @@
         </VBox>
     </top>
     <bottom>
-        <HBox spacing="50.0" BorderPane.alignment="CENTER">
+        <HBox spacing="50.0" style="-fx-background-color: #AB4642;" BorderPane.alignment="CENTER">
             <children>
                 <Label id="assembleResultLbl" fx:id="assembleResultLbl" text="Label" visible="false" />
                 <Region HBox.hgrow="ALWAYS" />
@@ -64,9 +61,27 @@
         <VBox BorderPane.alignment="CENTER" />
     </right>
     <center>
-        <SplitPane BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.5576" BorderPane.alignment="CENTER">
             <items>
-                <AnchorPane prefHeight="499.0" prefWidth="400.0">
+            <SplitPane dividerPositions="0.78" orientation="VERTICAL">
+               <items>
+                    <TextArea id="text-area" fx:id="textArea" prefHeight="576.0" prefWidth="625.0" stylesheets="@GUI_Parameters.css" wrapText="true" />
+                  <TitledPane collapsible="false" text="Output" wrapText="true">
+                     <content>
+                        <TextArea fx:id="outputTextArea" prefHeight="200.0" prefWidth="200.0">
+                           <cursor>
+                              <Cursor fx:constant="NONE" />
+                           </cursor>
+                           <stylesheets>
+                              <URL value="@GUI_Parameters.css" />
+                              <URL value="@outputTextArea.css" />
+                           </stylesheets>
+                        </TextArea>
+                     </content>
+                  </TitledPane>
+               </items>
+            </SplitPane>
+                <AnchorPane prefHeight="499.0" prefWidth="400.0" SplitPane.resizableWithParent="false">
                     <children>
                         <TabPane layoutX="162.0" layoutY="29.0" prefHeight="499.0" prefWidth="557.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <tabs>
@@ -107,7 +122,7 @@
                                                                             </TextField>
                                                                             <ComboBox fx:id="comboBox0" onAction="#handleComboBox0" visibleRowCount="3" />
                                                                                 
-                                                                                                                        </children>
+                                                                                                                              </children>
                                                                         <padding>
                                                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                                         </padding>
@@ -494,7 +509,7 @@
                                                 </AnchorPane>
                                              </content>
                                           </ScrollPane>
-                                          <TitledPane layoutX="14.0" layoutY="43.0" text="Clock cycles" wrapText="true">
+                                          <TitledPane layoutX="14.0" layoutY="43.0" maxWidth="650.0" prefWidth="672.0" scaleShape="false" text="Clock cycles" wrapText="true">
                                              <content>
                                                 <AnchorPane>
                                                    <children>
@@ -577,7 +592,4 @@
             </items>
         </SplitPane>
     </center>
-    <left>
-        <TextArea id="text-area" fx:id="textArea" prefHeight="576.0" prefWidth="571.0" stylesheets="@GUI_Parameters.css" wrapText="true" BorderPane.alignment="CENTER" />
-    </left>
 </BorderPane>

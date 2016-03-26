@@ -1,0 +1,11 @@
+.text-area .content{
+    -fx-background-color: #585858;
+}
+
+.text-area{
+    -fx-font-family: Consolas;
+    -fx-font-size: 14;
+    -fx-highlight-fill: #A1B56C;
+    -fx-highlight-text-fill: #F8F8F8;
+    -fx-text-fill: #d4cfc9;
+}

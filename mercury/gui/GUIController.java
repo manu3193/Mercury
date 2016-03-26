@@ -1,19 +1,27 @@
 package mercury.gui;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Kevin
@@ -36,7 +44,16 @@ public class GUIController implements Initializable {
     public Button logButton;
 
     @FXML
+    public Button assembleButton;
+
+    @FXML
+    public Button simulateButton;
+
+    @FXML
     public TextArea textArea;
+
+    @FXML
+    public TextArea outputTextArea;
 
     @FXML
     public MenuItem menuClose;
@@ -89,7 +106,8 @@ public class GUIController implements Initializable {
     @FXML
     public ComboBox<String> comboBoxPC;
 
-    ObservableList<String> options
+    @FXML
+    private ObservableList<String> options
             = FXCollections.observableArrayList(
                     "Dec",
                     "Bin",
@@ -163,13 +181,43 @@ public class GUIController implements Initializable {
     public Label CFlag_Lbl;
     
     @FXML
-    public Label VFlag_Lbl; 
-    
+    public Label VFlag_Lbl;
+
+    @FXML
+    public FileChooser openDialog;
+
+    @FXML
+    public Desktop desktop;
+
+    @FXML
+    public ArmFileReader reader = new ArmFileReader();
+
+    @FXML
+    private static final Logger LOG = Logger.getLogger(Mercury.class.getName());
+
+    @FXML
+    private Future<List<String>> future;
+
+    @FXML
+    private ExecutorService executorService;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("Loading user data...");
-        
+        openDialog = new FileChooser();
+        desktop = Desktop.getDesktop();
+        configureOpenDialog();
         /*Initialize combo boxes for all registers. */
+        initComboBoxes();
+        /*Set text fields as not editable.*/
+        initRegisterTextField();
+
+        
+        
+    }
+
+    @FXML
+    private void initComboBoxes(){
         comboBox0.setItems(options);
         comboBox0.setValue("Hex");
         comboBox1.setItems(options);
@@ -202,8 +250,10 @@ public class GUIController implements Initializable {
         comboBoxLR.setValue("Hex");
         comboBoxPC.setItems(options);
         comboBoxPC.setValue("Hex");
+    }
 
-        /*Set text fields as not editable.*/
+    @FXML
+    private void initRegisterTextField(){
         textFieldR0.setEditable(false);
         textFieldR1.setEditable(false);
         textFieldR2.setEditable(false);
@@ -221,11 +271,8 @@ public class GUIController implements Initializable {
         textFieldLR.setEditable(false);
         textFieldPC.setEditable(false);
         CSPR_TextField.setEditable(false);
-        
-        
-        
-    }
 
+    }
     @FXML
     private void handleNewButtonAction(ActionEvent event) {
         System.out.println("Creating new file...");
@@ -234,8 +281,45 @@ public class GUIController implements Initializable {
 
     @FXML
     private void handleOpenButtonAction(ActionEvent event) {
-        System.out.println("Opening file...");
+        File file = openDialog.showOpenDialog(newButton.getScene().getWindow());
+        if (file != null) {
+            try {
+                setContentTextArea(file);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
 
+    }
+    @FXML
+    private void setContentTextArea(File file) throws InterruptedException, ExecutionException {
+        executorService= Executors.newSingleThreadExecutor();
+        textArea.clear();
+        future = executorService.submit(new Callable<List<String>>() {
+            public List<String> call() throws Exception {
+                return reader.read(file);
+            }
+        });
+        List<String> lines = future.get();
+        executorService.shutdownNow();
+        textArea.clear();
+        for (String line : lines ) {
+            textArea.appendText(line + "\n");
+        }
+        lines.clear();
+    }
+
+    @FXML
+    private void configureOpenDialog(){
+        openDialog.setTitle("Open ARMv4 program");
+        openDialog.setInitialDirectory(
+                new File(System.getProperty("user.home"))
+        );
+        openDialog.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("ARMv4 files", "*.arm4")
+        );
     }
 
     @FXML
@@ -430,4 +514,23 @@ public class GUIController implements Initializable {
     private void retrieveContentPC(ActionEvent event) {
         String registerVal = textFieldPC.getText();
     }
+
+    @FXML
+    private void handleOutput(ActionEvent event) {
+        String output = textFieldPC.getText();
+    }
+
+    @FXML
+    private void openFile(File file) {
+        try {
+            desktop.open(file);
+        } catch (IOException ex) {
+            Logger.getLogger(
+                    Mercury.class.getName()).log(
+                    Level.SEVERE, null, ex
+            );
+        }
+    }
 }
+
+
