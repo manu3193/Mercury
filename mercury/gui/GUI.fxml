@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mercury.gui.GUIController">
     <top>
@@ -63,12 +63,16 @@
     <center>
         <SplitPane dividerPositions="0.5576" BorderPane.alignment="CENTER">
             <items>
-            <SplitPane dividerPositions="0.78" orientation="VERTICAL">
+            <SplitPane dividerPositions="0.78" orientation="VERTICAL" prefWidth="5000.0">
                <items>
-                    <TextArea id="text-area" fx:id="textArea" prefHeight="576.0" prefWidth="625.0" stylesheets="@GUI_Parameters.css" wrapText="true" />
+                  <ScrollPane fitToWidth="true" pannable="true" prefViewportHeight="445.0" prefViewportWidth="567.0">
+                     <content>
+                          <TextArea id="text-area" fx:id="textArea" prefHeight="445.0" prefWidth="2000.0" stylesheets="@GUI_Parameters.css" wrapText="true" />
+                     </content>
+                  </ScrollPane>
                   <TitledPane collapsible="false" text="Output" wrapText="true">
                      <content>
-                        <TextArea fx:id="outputTextArea" prefHeight="200.0" prefWidth="200.0">
+                        <TextArea fx:id="outputTextArea" editable="false" prefHeight="200.0" prefWidth="200.0">
                            <cursor>
                               <Cursor fx:constant="NONE" />
                            </cursor>
@@ -113,9 +117,6 @@
                                                                                 </padding>
                                                                             </HBox>
                                                                             <TextField fx:id="textFieldR0" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -145,9 +146,6 @@
                                                                                 </padding>
                                                                             </HBox>
                                                                             <TextField fx:id="textFieldR1" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -176,9 +174,6 @@
                                                                                 </padding>
                                                                             </HBox>
                                                                             <TextField fx:id="textFieldR2" alignment="TOP_CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -200,9 +195,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR3" alignment="TOP_CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -224,9 +216,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR4" alignment="TOP_CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -248,9 +237,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR5" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -272,9 +258,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR6" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -296,9 +279,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR7" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -320,9 +300,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR8" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -344,9 +321,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR9" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -372,9 +346,6 @@
                                                                                 </children>
                                                                             </HBox>
                                                                             <TextField fx:id="textFieldR10" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -396,9 +367,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR11" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -420,9 +388,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR12" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -444,9 +409,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldR13" alignment="CENTER" editable="false" text="0xFF000000">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -468,9 +430,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldLR" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -492,9 +451,6 @@
                                                                                 </padding>
                                                                             </Label>
                                                                             <TextField fx:id="textFieldPC" alignment="CENTER" editable="false" text="0x0">
-                                                                                <effect>
-                                                                                    <DropShadow />
-                                                                                </effect>
                                                                <cursor>
                                                                   <Cursor fx:constant="DEFAULT" />
                                                                </cursor>
@@ -576,7 +532,45 @@
                                 </Tab>
                                 <Tab text="Memory">
                                     <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane layoutX="21.0" layoutY="96.0" prefViewportHeight="400.0" prefViewportWidth="377.0">
+                                       <content>
+                                          <TableView id="tableView" fx:id="tableView" layoutX="21.0" layoutY="96.0">
+                                            <columns>
+                                              <TableColumn fx:id="colWordAddress" prefWidth="75.0" text="Word Address" />
+                                              <TableColumn fx:id="colByte3" prefWidth="75.0" text="Byte 3" />
+                                                <TableColumn fx:id="colByte2" prefWidth="75.0" text="Byte 2" />
+                                                <TableColumn fx:id="colByte1" prefWidth="75.0" text="Byte 1" />
+                                                <TableColumn fx:id="colByte0" prefWidth="75.0" text="Byte 0" />
+                                            </columns>
+                                             <padding>
+                                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                             </padding>
+                                          </TableView>
+                                       </content>
+                                    </ScrollPane>
+                                    <HBox layoutX="12.0" layoutY="15.0" spacing="10.0">
+                                       <children>
+                                          <Label text="Start address:" />
+                                          <Region prefHeight="49.0" prefWidth="0.0" HBox.hgrow="NEVER" />
+                                          <TextField fx:id="txtFieldStartAddress" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox layoutX="17.0" layoutY="45.0" spacing="10.0">
+                                       <children>
+                                          <Label text="End address:" />
+                                          <Region prefHeight="49.0" prefWidth="0.0" HBox.hgrow="NEVER" />
+                                          <TextField fx:id="txtFieldEndAddress" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children></AnchorPane>
                                     </content>
                                 </Tab>
                             </tabs>

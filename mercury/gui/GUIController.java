@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
@@ -164,7 +165,31 @@ public class GUIController implements Initializable {
     
     @FXML
     public TextField CSPR_TextField;
-   
+
+    @FXML
+    public TextField txtFieldStartAddress;
+
+    @FXML
+    public TextField txtFieldEndAddress;
+
+    @FXML
+    public TableView<Memory> tableView;
+
+    @FXML
+    public TableColumn<Memory, String>  colWordAddress;
+
+    @FXML
+    public TableColumn<Memory, String>  colByte3;
+
+    @FXML
+    public TableColumn<Memory, String>  colByte2;
+
+    @FXML
+    public TableColumn<Memory, String>  colByte1;
+
+    @FXML
+    public TableColumn<Memory, String>  colByte0;
+
     @FXML
     public Label Curr_Inst_Lbl;
 
@@ -182,6 +207,12 @@ public class GUIController implements Initializable {
     
     @FXML
     public Label VFlag_Lbl;
+
+    @FXML
+    public ScrollPane scrollPane;
+
+    @FXML
+    public ScrollPane scroll2;
 
     @FXML
     public FileChooser openDialog;
@@ -211,9 +242,7 @@ public class GUIController implements Initializable {
         initComboBoxes();
         /*Set text fields as not editable.*/
         initRegisterTextField();
-
-        
-        
+        initTable();
     }
 
     @FXML
@@ -274,9 +303,14 @@ public class GUIController implements Initializable {
 
     }
     @FXML
+    private void initTable(){
+        tableView = new TableView<>();
+
+
+    }
+    @FXML
     private void handleNewButtonAction(ActionEvent event) {
         System.out.println("Creating new file...");
-
     }
 
     @FXML

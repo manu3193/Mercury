@@ -15,7 +15,14 @@
     -fx-text-fill: #7CAFC2;
 }
 
-.text-input:readonly {
+.text-input.readonly {
     -fx-background-color: transparent;
    
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-pane {
+    -fx-background-color: transparent;
 }
