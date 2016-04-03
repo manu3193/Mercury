@@ -57,8 +57,6 @@ import java.io.FileReader;
             System.exit(1);
         }
 
-
-
 :}
      /* ------------Declaracion de simbolos terminales y no terminales---------- */
 

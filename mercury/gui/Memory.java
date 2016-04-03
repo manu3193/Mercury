@@ -10,6 +10,7 @@ public class Memory {
     private String byte2;
     private String byte1;
     private String byte0;
+    private int row;
 
     public Memory(){
         this.wordAddress ="0x0";
@@ -17,6 +18,7 @@ public class Memory {
         this.byte2 = " ";
         this.byte1 = " ";
         this.byte0 = " ";
+        this.setRow(0);
     }
 
     public String getWordAddress() {
@@ -60,5 +62,11 @@ public class Memory {
     }
 
 
+    public int getRow() {
+        return row;
+    }
 
+    public void setRow(int row) {
+        this.row = row;
+    }
 }

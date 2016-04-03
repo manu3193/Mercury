@@ -3,6 +3,7 @@ package mercury.gui;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -12,6 +13,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 
 import java.awt.*;
@@ -29,6 +32,8 @@ import java.util.logging.Logger;
  */
 public class GUIController implements Initializable {
 
+    @FXML
+    private static final int N = 1024;
     @FXML
     public Label assembleResultLbl;
 
@@ -242,6 +247,7 @@ public class GUIController implements Initializable {
         initComboBoxes();
         /*Set text fields as not editable.*/
         initRegisterTextField();
+        //tableView.setPlaceholder(new Label("No memory addresses to show."));
         initTable();
     }
 
@@ -304,10 +310,50 @@ public class GUIController implements Initializable {
     }
     @FXML
     private void initTable(){
-        tableView = new TableView<>();
+        tableView.setEditable(true);
+        colWordAddress.setMinWidth(35);
+        colWordAddress.setCellValueFactory(new PropertyValueFactory<>("wordAddress"));
+        colWordAddress.setSortable(false);
 
+        colByte3.setMinWidth(10);
+        colByte3.setCellValueFactory(new PropertyValueFactory<>("byte3"));
+        colByte3.setSortable(false);
+        colByte3.setCellFactory(TextFieldTableCell.forTableColumn());
+
+
+        colByte2.setMinWidth(10);
+        colByte2.setCellValueFactory(new PropertyValueFactory<>("byte2"));
+        colByte2.setSortable(false);
+        colByte2.setCellFactory(TextFieldTableCell.forTableColumn());
+
+
+        colByte1.setMinWidth(10);
+        colByte1.setCellValueFactory(new PropertyValueFactory<>("byte1"));
+        colByte1.setSortable(false);
+        colByte1.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        colByte0.setMinWidth(10);
+        colByte0.setCellValueFactory(new PropertyValueFactory<>("byte0"));
+        colByte0.setSortable(false);
+        colByte0.setCellFactory(TextFieldTableCell.forTableColumn());
+
+
+        tableView.setPlaceholder(new Label("No addresses to show."));
+        tableView.setItems(fillTable());
 
     }
+
+    private ObservableList<Memory> fillTable(){
+        ObservableList<Memory> memoryAddress = FXCollections.observableArrayList();
+        Memory mem = new Memory();
+        for (int i =0; i<N; i++) {
+            mem.setRow(i);
+            memoryAddress.add(new Memory());
+
+        }
+        return memoryAddress;
+    }
+
     @FXML
     private void handleNewButtonAction(ActionEvent event) {
         System.out.println("Creating new file...");
