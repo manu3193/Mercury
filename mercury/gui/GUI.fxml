@@ -63,13 +63,9 @@
     <center>
         <SplitPane dividerPositions="0.5576" BorderPane.alignment="CENTER">
             <items>
-            <SplitPane dividerPositions="0.78" orientation="VERTICAL" prefWidth="5000.0">
+            <SplitPane dividerPositions="0.77" orientation="VERTICAL" prefWidth="5000.0">
                <items>
-                  <ScrollPane fitToWidth="true" pannable="true" prefViewportHeight="445.0" prefViewportWidth="567.0">
-                     <content>
-                          <TextArea id="text-area" fx:id="textArea" prefHeight="445.0" prefWidth="2000.0" stylesheets="@GUI_Parameters.css" wrapText="true" />
-                     </content>
-                  </ScrollPane>
+                  <TextArea id="text-area" fx:id="textArea" prefHeight="400.0" prefWidth="565.0" stylesheets="@GUI_Parameters.css" />
                   <TitledPane collapsible="false" text="Output" wrapText="true">
                      <content>
                         <TextArea fx:id="outputTextArea" editable="false" prefHeight="200.0" prefWidth="200.0">

@@ -84,10 +84,11 @@ public class Main {
                     try {
                         LexicalAnalysis lexicalAnalysis= new LexicalAnalysis( new FileReader(entrada));
                         SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
-                       // synAnalysis.initErrorList();
+                        synAnalysis.getErrorList();
+                        synAnalysis.initErrorList();
                         Object result = synAnalysis.parse().value;
-                        //errorList = lexicalAnalysis.getErrorList();
-                        //errorList.append(synAnalysis.getErrorList());
+                        errorList = lexicalAnalysis.getErrorList();
+                        errorList.append(synAnalysis.getErrorList());
 
 
                     } catch (FileNotFoundException e) {
