@@ -17,6 +17,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import mercury.ErrorList;
 import mercury.ErrorMessage;
 import mercury.LexicalAnalysis;
@@ -47,13 +50,6 @@ public class GUIController implements Initializable {
 
     @FXML
     private static final int N = 1024;
-
-    @FXML
-    private ExecutorService exec = Executors.newCachedThreadPool(r -> {
-        Thread t = new Thread(r);
-        t.setDaemon(true);
-        return t;
-    });
 
     @FXML
     public Label assembleResultLbl;
@@ -264,6 +260,9 @@ public class GUIController implements Initializable {
     @FXML
     private File file;
 
+    @FXML
+    Stage stage;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("Loading user data...");
@@ -384,7 +383,7 @@ public class GUIController implements Initializable {
 
     @FXML
     private void handleNewButtonAction(ActionEvent event) {
-        System.out.println("Creating new file...");
+        textArea.clear();
     }
 
     @FXML
@@ -436,7 +435,7 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void configureSaveDialog(){
+    private void configureSaveDialog() {
         saveDialog = new FileChooser();
         saveDialog.setTitle("Save ARMv4 program");
         saveDialog.setInitialDirectory(
@@ -447,6 +446,7 @@ public class GUIController implements Initializable {
         );
 
     }
+
     @FXML
     private void handleSaveButtonAction(ActionEvent event) {
         file = saveDialog.showSaveDialog(newButton.getScene().getWindow());
