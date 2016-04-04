@@ -1,26 +1,39 @@
 package mercury;
 import java_cup.runtime.*;
-import mercury.arm.assembler.TokenTypes;
-import mercury.arm.assembler.Token;
-import mercury.arm.assembler.TokenList;
-import java.io.FileReader;
+import mercury.arm.instruction.LabelStatement;
+import java.util.ArrayList;
+import java.util.List;
+import mercury.arm.instruction.Constants;
 
 
-    action code{::}
+    action code{:
+
+    protected ProgramStatement statement = new ProgramStatement();
+
+    private void newStatement(){
+        statement= new ProgramStatement();
+    }
+
+    :}
     /* Codigo del parser, se copia integramente a la clase final.
         Se agrega el manejo de errores. */
     parser code {:
 
      //Miembro de la clase que contiene los errores del programa
-     private ErrorList errorList;
-
-     public void initErrorList(){
-     this.errorList = new ErrorList();
-     }
+     private ErrorList mErrorList=new ErrorList();
 
      public ErrorList getErrorList(){
-        return errorList;
-     }
+        return mErrorList; }
+
+     //Miembro de clase que contiene la lista de statements
+     protected List<ProgramStatement> mProgramStatementList= new ArrayList<ProgramStatement>();
+
+     protected List<LabelStatement> mLabelList=new ArrayList<LabelStatement>();
+
+     public List<ProgramStatement> getStatementList(){ return mProgramStatementList;}
+
+     public List<LabelStatement> getLabelStatementList(){return mLabelList;}
+
 
 @Override
      public void syntax_error(Symbol sy){
@@ -31,7 +44,7 @@ import java.io.FileReader;
 
       //Metodo que ingresa los errores a la lista de errores del programa
       public void addError(String message, String type,int line, int column){
-        errorList.add(new ErrorMessage(line, column, message, type));
+        mErrorList.add(new ErrorMessage(line, column, message, type));
       }
 
         /* Reporte de error encontrado. */
@@ -67,7 +80,7 @@ import java.io.FileReader;
         Terminales que no tienen un valor son listados primero, los terminales que
         tienen un valor como los enteros son listados en la segunda o demas lineas. */
      terminal        newline, comma, leftpar, rightpar, sharp;
-     terminal String setlabel, comment, register, branch, calllabel, mnemonic, conditionalmnemonic, mnemonicset, mnemonicsetconditional, compare, compareconditional, move, conditionalmove, moveset, movesetconditional, mla, mlaconditional, mlaset, mlasetconditional, memorymnemonic, memorymnemonicconditional, hex, num;
+     terminal String setlabel, comment, register, branch, calllabel, mnemonic, conditionalmnemonic, mnemonicset, mnemonicsetconditional, compare, compareconditional, move, conditionalmove, moveset, movesetconditional,rrx, conditionalrrx, rrxset, rrxsetconditional,shift, conditionalshift, shiftset, shiftsetconditional, mla, mlaconditional, mlaset, mlasetconditional,mul, mulconditional, mulset, mulsetconditional, memorymnemonic, memorymnemonicconditional, hex, num;
 
      /* No terminales usados en la seccion gramatical
 
@@ -75,8 +88,8 @@ import java.io.FileReader;
         se lista los no terminales que tienen un entero. Un Object se refiere a que
         no tienen tipo, pudiendo ser entero o String. */
 
-     non terminal Object     PROGRAM, STATEMENT, INSTRUCTION, DATAPROCESSING, MEMORY, DPADDR, RELATIVEADDR, CMVADDR, MLAADDR;
-     non terminal String     NORMALADDR, DPMNEMONIC, CMPMNEMONIC, MVMNEMONIC, MLAMNEMONIC, MEMMNEMONIC, IMMEDIATE;
+     non terminal Object     PROGRAM, STATEMENT, INSTRUCTION, DATAPROCESSING, MEMORY, DPADDR, RELATIVEADDR, CMVADDR, MLAADDR, MULADDR, RRXADDR,SHIFTADDR, SHAMT5;
+     non terminal String     NORMALADDR, DPMNEMONIC, CMPMNEMONIC, MVMNEMONIC, MLAMNEMONIC, MEMMNEMONIC, IMMEDIATE,MULMNEMONIC,RRXMNEMONIC,SHIFTMNEMONIC;
 
      /* ------------------- Seccion de la gramatica ------------------------ */
 /**
@@ -128,25 +141,201 @@ import java.io.FileReader;
 
   start with PROGRAM;
 
-
-  PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
-  STATEMENT::=   setlabel comment | setlabel newline| INSTRUCTION newline | INSTRUCTION comment | newline | comment |
+PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
+  STATEMENT::=   setlabel:setlabel comment{:parser.mLabelList.add(new LabelStatement(setlabel,setlabelleft + 1));:} |
+                 setlabel:setlabel2 newline{:parser.mLabelList.add(new LabelStatement(setlabel2,setlabel2left + 1));:} |
+                 INSTRUCTION newline{:parser.mProgramStatementList.add(statement);
+                                      newStatement();
+                                     :} |
+                 INSTRUCTION comment{:parser.mProgramStatementList.add(statement);
+                                      newStatement();
+                                     :} |
+                 newline |
+                 comment |
                  error newline STATEMENT;
-  INSTRUCTION ::=  DATAPROCESSING | MEMORY | branch calllabel;
+  INSTRUCTION ::=  DATAPROCESSING{:
+                                   statement.setInstructionType(Constants.DP_TYPE);
+                                  :} |
+                   MEMORY{:
+                          statement.setInstructionType(Constants.MEM_TYPE);
+                          :} |
+                   branch:bmnemonic calllabel:calledLabel{:
+                                                         statement.setInstructionType(Constants.B_TYPE);
+                                                         statement.setMnemonic(bmnemonic);
+                                                         statement.setLine(calledLabelleft+1);
+                                                         if(bmnemonic.length()>1){
+                                                            statement.setHasConditionalSufix(true);
+                                                         }
+                                                         :};
   DATAPROCESSING ::= DPMNEMONIC DPADDR | CMPMNEMONIC CMVADDR | MVMNEMONIC CMVADDR |
-                         MLAMNEMONIC MLAADDR;
+                         MLAMNEMONIC MLAADDR |MULMNEMONIC MULADDR|RRXMNEMONIC RRXADDR| SHIFTMNEMONIC SHIFTADDR;
   MEMORY ::= MEMMNEMONIC register comma RELATIVEADDR;
-  DPADDR ::= NORMALADDR comma register | NORMALADDR comma IMMEDIATE |
-             NORMALADDR comma RELATIVEADDR;
-  NORMALADDR ::= register comma register;
-  RELATIVEADDR ::= leftpar register comma IMMEDIATE rightpar | leftpar register rightpar |
-                   leftpar NORMALADDR rightpar;
-  CMVADDR ::= NORMALADDR | register comma IMMEDIATE;
-  MLAADDR ::= NORMALADDR comma NORMALADDR | NORMALADDR comma register comma IMMEDIATE;
-  DPMNEMONIC ::= mnemonic | conditionalmnemonic | mnemonicset | mnemonicsetconditional;
-  CMPMNEMONIC ::= compare | compareconditional;
-  MVMNEMONIC ::= move | conditionalmove | moveset | movesetconditional;
-  MLAMNEMONIC ::= mla | mlaconditional | mlaset | mlasetconditional;
-  MEMMNEMONIC ::= memorymnemonic | memorymnemonicconditional;
-  IMMEDIATE ::= sharp hex | sharp num;
+  DPADDR ::= NORMALADDR comma register:Reg3{:
+                                            statement.setRm(Reg3);
+                                            statement.setAddressingMode(Constants.DP_NORMAL_ADDRESING);
+                                            :} |
+             NORMALADDR comma IMMEDIATE{:
+                                        statement.setAddressingMode(Constants.DP_IMM_ADDRESSING);
+                                        :};
+  NORMALADDR ::= register:Rega comma register:Regb{:
+                                                   statement.setRd(Rega);
+                                                   statement.setRn(Regb);
+                                                   :};
+
+  RELATIVEADDR ::= leftpar register comma IMMEDIATE rightpar{:
+                                                             statement.setAddressingMode(Constants.MEM_OFFSET_IMM_ADDRESSING);
+                                                             :} |
+                   leftpar register rightpar{:
+                                             statement.setAddressingMode(Constants.MEM_REG_ADDRESSING);
+                                             :} |
+                   leftpar NORMALADDR rightpar{:
+                                               statement.setAddressingMode(Constants.MEM_OFFSET_REG_ADDRESSING);
+                                               :};
+  CMVADDR ::= NORMALADDR{:statement.setAddressingMode(Constants.DP_CMV_REG_ADDRESSING);:} |
+              register:Reg1 comma IMMEDIATE{:statement.setRn(Reg1);
+                                             statement.setAddressingMode(Constants.DP_CMV_IMM_ADDRESSING);
+                                            :};
+  MLAADDR ::= register:rega comma register:regb comma register:regc comma register:regd{:statement.setAddressingMode(Constants.DP_MLA_NORMAL_ADDRESSING);
+                                                                                         statement.setRd(rega);
+                                                                                         statement.setRn(regb);
+                                                                                         statement.setRm(regc);
+                                                                                         statement.setRa(regd);
+                                                                                        :};
+
+  RRXADDR ::= register:rega comma register:regb{:statement.setAddressingMode(Constants.DP_RRX_NORMAL_ADDRESSING);
+                                                 statement.setRd(rega);
+                                                 statement.setRm(regb);
+                                                :};
+  SHIFTADDR ::= register:rega comma register:regb comma register:regc{:statement.setAddressingMode(Constants.DP_SHIFT_NORMAL_ADDRESSING);
+                                                                      statement.setRd(rega);
+                                                                      statement.setRm(regb);
+                                                                      statement.setRs(regc);
+                                                                     :} |
+                register:regd comma register:rege comma SHAMT5{:statement.setAddressingMode(Constants.DP_SHIFT_SHAMT5_ADDRESSING);
+                                                              statement.setRd(regd);
+                                                              statement.setRm(rege);
+                                                             :};
+
+  MULADDR ::= NORMALADDR comma register:Reg1{:statement.setRm(Reg1);
+                                             statement.setAddressingMode(Constants.DP_MUL_NORMAL_ADDRESSING);
+                                             :};
+  DPMNEMONIC ::= mnemonic:mnemonic{:statement.setMnemonic(mnemonic);
+                                    statement.setLine(mnemonicleft+1);
+                                   :} |
+                 conditionalmnemonic:condSufix{:statement.setMnemonic(condSufix);
+                                                statement.setLine(condSufixleft+1);
+                                                statement.setHasConditionalSufix(true);
+                                               :} |
+                 mnemonicset:setFlagsSufix{:statement.setMnemonic(setFlagsSufix);
+                                            statement.setLine(setFlagsSufixleft+1);
+                                            statement.setHasSetFlagsSufix(true);
+                                           :} |
+                 mnemonicsetconditional:setCondSufix{:statement.setMnemonic(setCondSufix);
+                                                      statement.setLine(setCondSufixleft+1);
+                                                      statement.setHasConditionalSufix(true);
+                                                      statement.setHasSetFlagsSufix(true);
+                                                     :};
+  CMPMNEMONIC ::= compare:mnemonic{:statement.setMnemonic(mnemonic);
+                                    statement.setLine(mnemonicleft+1);
+                                   :} |
+                  compareconditional:condSufix{:statement.setMnemonic(condSufix);
+                                                statement.setLine(condSufixleft+1);
+                                                statement.setHasConditionalSufix(true);
+                                               :};
+  MVMNEMONIC ::= move:mnemonic{:statement.setMnemonic(mnemonic);
+                                statement.setLine(mnemonicleft+1);
+                               :} |
+                conditionalmove:condSufix{:statement.setMnemonic(condSufix);
+                                           statement.setLine(condSufixleft+1);
+                                           statement.setHasConditionalSufix(true);
+                                          :} |
+                moveset:setFlagsSufix{:statement.setMnemonic(setFlagsSufix);
+                                       statement.setLine(setFlagsSufixleft+1);
+                                       statement.setHasSetFlagsSufix(true);
+                                      :} |
+                movesetconditional:setCondSufix{:statement.setMnemonic(setCondSufix);
+                                                 statement.setLine(setCondSufixleft+1);
+                                                 statement.setHasConditionalSufix(true);
+                                                 statement.setHasSetFlagsSufix(true);
+                                                :};
+  MLAMNEMONIC ::= mla:mnemonic{:statement.setMnemonic(mnemonic);
+                                statement.setLine(mnemonicleft+1);
+                               :} |
+                  mlaconditional:condSufix{:statement.setMnemonic(condSufix);
+                                            statement.setLine(condSufixleft+1);
+                                            statement.setHasConditionalSufix(true);
+                                           :} |
+                  mlaset:setFlagsSufix{:statement.setMnemonic(setFlagsSufix);
+                                        statement.setLine(setFlagsSufixleft+1);
+                                        statement.setHasSetFlagsSufix(true);
+                                       :} |
+                  mlasetconditional:setCondSufix{:statement.setMnemonic(setCondSufix);
+                                                  statement.setLine(setCondSufixleft+1);
+                                                  statement.setHasConditionalSufix(true);
+                                                  statement.setHasSetFlagsSufix(true);
+                                                 :};
+  MULMNEMONIC ::= mul:mnemonic{:statement.setMnemonic(mnemonic);
+                                  statement.setLine(mnemonicleft+1);
+                                 :} |
+                    mulconditional:condSufix{:statement.setMnemonic(condSufix);
+                                              statement.setLine(condSufixleft+1);
+                                              statement.setHasConditionalSufix(true);
+                                             :} |
+                    mulset:setFlagsSufix{:statement.setMnemonic(setFlagsSufix);
+                                          statement.setLine(setFlagsSufixleft+1);
+                                          statement.setHasSetFlagsSufix(true);
+                                         :} |
+                    mulsetconditional:setCondSufix{:statement.setMnemonic(setCondSufix);
+                                                    statement.setLine(setCondSufixleft+1);
+                                                    statement.setHasConditionalSufix(true);
+                                                    statement.setHasSetFlagsSufix(true);
+                                                   :};
+   RRXMNEMONIC ::= rrx:mnemonic{:statement.setMnemonic(mnemonic);
+                                     statement.setLine(mnemonicleft+1);
+                                    :} |
+                       conditionalrrx:condSufix{:statement.setMnemonic(condSufix);
+                                                 statement.setLine(condSufixleft+1);
+                                                 statement.setHasConditionalSufix(true);
+                                                :} |
+                       rrxset:setFlagsSufix{:statement.setMnemonic(setFlagsSufix);
+                                             statement.setLine(setFlagsSufixleft+1);
+                                             statement.setHasSetFlagsSufix(true);
+                                            :} |
+                       rrxsetconditional:setCondSufix{:statement.setMnemonic(setCondSufix);
+                                                       statement.setLine(setCondSufixleft+1);
+                                                       statement.setHasConditionalSufix(true);
+                                                       statement.setHasSetFlagsSufix(true);
+                                                      :};
+  SHIFTMNEMONIC ::= shift:mnemonic{:statement.setMnemonic(mnemonic);
+                                       statement.setLine(mnemonicleft+1);
+                                      :} |
+                         conditionalshift:condSufix{:statement.setMnemonic(condSufix);
+                                                     statement.setLine(condSufixleft+1);
+                                                     statement.setHasConditionalSufix(true);
+                                                  :} |
+                         shiftset:setFlagsSufix{:statement.setMnemonic(setFlagsSufix);
+                                               statement.setLine(setFlagsSufixleft+1);
+                                               statement.setHasSetFlagsSufix(true);
+                                              :} |
+                         shiftsetconditional:setCondSufix{:statement.setMnemonic(setCondSufix);
+                                                         statement.setLine(setCondSufixleft+1);
+                                                         statement.setHasConditionalSufix(true);
+                                                         statement.setHasSetFlagsSufix(true);
+                                                        :};
+  MEMMNEMONIC ::= memorymnemonic:mnemonic{:statement.setMnemonic(mnemonic);
+                                           statement.setLine(mnemonicleft+1);
+                                          :} |
+                  memorymnemonicconditional:condSufix{:statement.setMnemonic(condSufix);
+                                                       statement.setLine(condSufixleft+1);
+                                                       statement.setHasConditionalSufix(true);
+                                                      :};
+  IMMEDIATE ::= sharp hex:hexNum{:
+                                 statement.setImm(hexNum);
+                                 :} |
+                sharp num:decNum{:
+                                 statement.setImm(decNum);
+                                 :};
+  SHAMT5 ::= sharp num:decNum{:
+                                   statement.setShamt5(decNum);
+                                   :};
 
