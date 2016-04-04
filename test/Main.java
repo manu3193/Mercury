@@ -4,10 +4,9 @@ package test;
  * Created by manzumbado on 22/03/16.
  */
 
-import mercury.ErrorList;
-import mercury.SyntaxAnalysis;
-import mercury.arm.assembler.TokenList;
+import mercury.ARMProgram;
 import mercury.LexicalAnalysis;
+import mercury.SyntaxAnalysis;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -31,7 +30,7 @@ public class Main {
     public static void main(String[] args) {
         java.util.Scanner in = new Scanner(System.in);
         int valor = 0;
-        ErrorList errorList;
+        ARMProgram program;
         do {
             System.out.println("Elija una opcion: ");
             System.out.println("1) Generar");
@@ -82,16 +81,14 @@ public class Main {
                     String entrada = "program.arm4";
                     String[] caca = {entrada};
                     try {
-                        LexicalAnalysis lexicalAnalysis= new LexicalAnalysis( new FileReader(entrada));
+                        program=new ARMProgram(entrada);
+                        LexicalAnalysis lexicalAnalysis= new LexicalAnalysis( new FileReader(program.getFilename()));
                         SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
-                       // synAnalysis.initErrorList();
                         Object result = synAnalysis.parse().value;
-                        //errorList = lexicalAnalysis.getErrorList();
-                        //errorList.append(synAnalysis.getErrorList());
+                        program.setErrorList(lexicalAnalysis.getErrorList().append(synAnalysis.getErrorList()));
+                        program.setSetLabelList(synAnalysis.getLabelStatementList());
+                        program.setStatementList(synAnalysis.getStatementList());
 
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (Exception e) {
