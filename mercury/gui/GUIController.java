@@ -17,20 +17,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import mercury.ErrorList;
 import mercury.ErrorMessage;
 import mercury.LexicalAnalysis;
 import mercury.SyntaxAnalysis;
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.LineNumberFactory;
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.LineNumberFactory;
-import org.fxmisc.richtext.StyleSpans;
-import org.fxmisc.richtext.StyleSpansBuilder;
-
 
 import java.awt.*;
 import java.io.*;
@@ -493,8 +484,8 @@ public class GUIController implements Initializable {
         System.out.println("Assembling!");
         outputTextArea.setEditable(true);
         outputTextArea.clear();
-        assembleResultLbl.setVisible(true);
-        try {
+        try {        assembleResultLbl.setVisible(true);
+
             FileReader newFile = new FileReader(file);
             LexicalAnalysis lexicalAnalysis = new LexicalAnalysis(newFile);
             SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
