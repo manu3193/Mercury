@@ -18,6 +18,7 @@ public class ProgramStatement {
     private String mImm;
     private String mRs;
     private String mShamt5;
+    private String mConditional;
     private String mCallLabel;
     private boolean mHasConditionalSufix;
     private boolean mHasSetFlagsSufix;
@@ -25,7 +26,7 @@ public class ProgramStatement {
     private int mMemoryAddress;
     private IBaseInstruction mEncodedInstruction;
     private int mLine;
-    private int mBranchAdress;
+    private String mBranchAdress;
 
     public ProgramStatement() {
         this.mHasSetFlagsSufix=false;
@@ -46,6 +47,14 @@ public class ProgramStatement {
 
     public String getRs() {
         return mRs;
+    }
+
+    public String getConditional() {
+        return mConditional;
+    }
+
+    public void setConditional(String mConditional) {
+        this.mConditional = mConditional;
     }
 
     public void setRs(String mRs) {
@@ -108,11 +117,11 @@ public class ProgramStatement {
         return mHasConditionalSufix;
     }
 
-    public int getBranchAdress() {
+    public String getBranchAdress() {
         return mBranchAdress;
     }
 
-    public void setBranchAdress(int mBranchAdress) {
+    public void setBranchAdress(String mBranchAdress) {
         this.mBranchAdress = mBranchAdress;
     }
 
@@ -155,8 +164,8 @@ public class ProgramStatement {
         this.mLine = mLine;
     }
 
-    public void setMemoryAddress(int memoryDirection) {
-        mMemoryAddress = memoryDirection;
+    public void setMemoryAddress(int memoryAddres) {
+        mMemoryAddress = memoryAddres;
     }
 
     public IBaseInstruction getEncodedInstruction() {
