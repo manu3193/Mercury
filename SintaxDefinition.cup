@@ -167,7 +167,9 @@ PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
                                                          :};
   DATAPROCESSING ::= DPMNEMONIC DPADDR | CMPMNEMONIC CMVADDR | MVMNEMONIC CMVADDR |
                          MLAMNEMONIC MLAADDR |MULMNEMONIC MULADDR|RRXMNEMONIC RRXADDR| SHIFTMNEMONIC SHIFTADDR;
-  MEMORY ::= MEMMNEMONIC register comma RELATIVEADDR;
+  MEMORY ::= MEMMNEMONIC register:Reg1 comma RELATIVEADDR{:
+                                                          statement.setRd(Reg1);
+                                                          :} ;
   DPADDR ::= NORMALADDR comma register:Reg3{:
                                             statement.setRm(Reg3);
                                             statement.setAddressingMode(Constants.DP_NORMAL_ADDRESING);
@@ -180,15 +182,19 @@ PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
                                                    statement.setRn(Regb);
                                                    :};
 
-  RELATIVEADDR ::= leftpar register comma IMMEDIATE rightpar{:
-                                                             statement.setAddressingMode(Constants.MEM_OFFSET_IMM_ADDRESSING);
+  RELATIVEADDR ::= leftpar register:Rn comma IMMEDIATE rightpar{:
+                                                                statement.setRn(Rn);
+                                                                statement.setAddressingMode(Constants.MEM_OFFSET_IMM_ADDRESSING);
                                                              :} |
-                   leftpar register rightpar{:
+                   leftpar register:Rn rightpar{:
+                                             statement.setRn(Rn);
                                              statement.setAddressingMode(Constants.MEM_REG_ADDRESSING);
                                              :} |
-                   leftpar NORMALADDR rightpar{:
-                                               statement.setAddressingMode(Constants.MEM_OFFSET_REG_ADDRESSING);
-                                               :};
+                   leftpar register:Rn comma register:Rm rightpar{:
+                                                                  statement.setAddressingMode(Constants.MEM_OFFSET_REG_ADDRESSING);
+                                                                  statement.setRn(Rn);
+                                                                  statement.setRm(Rm);
+                                                                  :};
   CMVADDR ::= NORMALADDR{:statement.setAddressingMode(Constants.DP_CMV_REG_ADDRESSING);:} |
               register:Reg1 comma IMMEDIATE{:statement.setRn(Reg1);
                                              statement.setAddressingMode(Constants.DP_CMV_IMM_ADDRESSING);
