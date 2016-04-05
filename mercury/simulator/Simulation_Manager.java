@@ -2,10 +2,12 @@ package mercury.simulator;
 
 import mercury.ARMProgram;
 import mercury.ProgramStatement;
-import mercury.arm.instruction.Constants;
+import mercury.arm.Constants;
+import mercury.arm.Constants.*;
 
-import java.util.ArrayList;
 import java.util.List;
+
+
 
 
 /**
@@ -16,73 +18,76 @@ public class Simulation_Manager {
 
     public Simulation_Manager() {
     }
-/*
+
     public void Simulate(ARMProgram mainProgram) {
         List<ProgramStatement> instructionSet;
         instructionSet = mainProgram.getStatementList();
-        ProgramStatement currentStatement = new ProgramStatement();
+        ProgramStatement currentStatement;
         String regularMnemonic;
-        /*
+
         for (int i = 0; i < instructionSet.size(); i++) {
             currentStatement = instructionSet.get(i);
             regularMnemonic = GetRegularMnemonic(currentStatement);
             switch (regularMnemonic) {
                 case Constants.AND_MNEMONIC:
+                    AndInstruction(currentStatement);
                     break;
-                case "MEMORY":
+                case Constants.EOR_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.SUB_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.RSB_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.ADD_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.ADC_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.SBC_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.RSC_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.CMP_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.CMN_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.ORR_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.MOV_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.LSL_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.ASR_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.RRX_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.ROR_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.BIC_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.MVN_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.MUL_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.MLA_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.STR_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.LDR_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.STRB_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.LDRB_MNEMONIC:
                     break;
-                case "BRANCH":
+                case Constants.B_MNEMONIC:
                     break;
-
             }
-
         }
-    }*/
+    }
 
+    private void AndInstruction(ProgramStatement instruction){
+
+
+    }
     private String GetRegularMnemonic(ProgramStatement instruction) {
         String instrMnemonic = instruction.getMnemonic();
         int instrMnemonicLength = instrMnemonic.length();
