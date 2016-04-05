@@ -499,7 +499,6 @@ public class GUIController implements Initializable {
             LexicalAnalysis lexicalAnalysis = new LexicalAnalysis(newFile);
             SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
 
-            synAnalysis.initErrorList();
             Object result = synAnalysis.parse().value;
             ErrorList errorList = lexicalAnalysis.getErrorList();
             errorList.append(synAnalysis.getErrorList());
