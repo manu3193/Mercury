@@ -18,6 +18,7 @@ public class ProgramStatement {
     private String mImm;
     private String mRs;
     private String mShamt5;
+    private String mCallLabel;
     private boolean mHasConditionalSufix;
     private boolean mHasSetFlagsSufix;
     private String mAddressingMode;
@@ -29,6 +30,14 @@ public class ProgramStatement {
     public ProgramStatement() {
         this.mHasSetFlagsSufix=false;
         this.mHasConditionalSufix=false;
+    }
+
+    public String getCallLabel() {
+        return mCallLabel;
+    }
+
+    public void setCallLabel(String mCallLabel) {
+        this.mCallLabel = mCallLabel;
     }
 
     public String getRd() {

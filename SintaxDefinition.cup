@@ -160,6 +160,7 @@ PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
                    branch:bmnemonic calllabel:calledLabel{:
                                                          statement.setInstructionType(Constants.B_TYPE);
                                                          statement.setMnemonic(bmnemonic);
+                                                         statement.setCalledLabel(calledLabel);
                                                          statement.setLine(calledLabelleft+1);
                                                          if(bmnemonic.length()>1){
                                                             statement.setHasConditionalSufix(true);
