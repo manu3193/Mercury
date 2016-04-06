@@ -130,6 +130,9 @@ public class Assembler {
         return hashmap;
     }
 
+    public ErrorList getErrorList(){
+        return this.errorList;
+    }
 
     public void Assemble(ARMProgram program){
         this.errorList=program.getErrorList();
