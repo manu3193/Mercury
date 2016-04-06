@@ -1,12 +1,14 @@
 package mercury.arm.instruction;
 
+import mercury.arm.Constants;
+
 /**
  * Created by manzumbado on 03/04/16.
  */
 public class RegShDataProcessigInstruction extends DataProcessingInstruction implements IBaseInstruction {
 
     private String mRs;
-    private String mBit7;
+    private String mBit7="0";
     private String mSh;
     private final String mBit4="1";
     private String mRm;

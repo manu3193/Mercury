@@ -20,7 +20,7 @@ public abstract class MemoryInstruction {
         return mCond;
     }
 
-    protected void setCond(String mCond) {
+    public void setCond(String mCond) {
         this.mCond = mCond;
     }
 
@@ -32,7 +32,7 @@ public abstract class MemoryInstruction {
         return mI;
     }
 
-    protected void setI(String mI) {
+    public void setI(String mI) {
         this.mI = mI;
     }
 
@@ -40,7 +40,7 @@ public abstract class MemoryInstruction {
         return mP;
     }
 
-    protected void setP(String mP) {
+    public void setP(String mP) {
         this.mP = mP;
     }
 
@@ -48,7 +48,7 @@ public abstract class MemoryInstruction {
         return mU;
     }
 
-    protected void setU(String mU) {
+    public void setU(String mU) {
         this.mU = mU;
     }
 
@@ -56,7 +56,7 @@ public abstract class MemoryInstruction {
         return mB;
     }
 
-    protected void setB(String mB) {
+    public void setB(String mB) {
         this.mB = mB;
     }
 
@@ -64,7 +64,7 @@ public abstract class MemoryInstruction {
         return mW;
     }
 
-    protected void setW(String mW) {
+    public void setW(String mW) {
         this.mW = mW;
     }
 
@@ -72,7 +72,7 @@ public abstract class MemoryInstruction {
         return mL;
     }
 
-    protected void setL(String mL) {
+    public void setL(String mL) {
         this.mL = mL;
     }
 
@@ -80,7 +80,7 @@ public abstract class MemoryInstruction {
         return mRn;
     }
 
-    protected void setRn(String mRn) {
+    public void setRn(String mRn) {
         this.mRn = mRn;
     }
 
@@ -88,7 +88,7 @@ public abstract class MemoryInstruction {
         return mRd;
     }
 
-    protected void setRd(String mRd) {
+    public void setRd(String mRd) {
         this.mRd = mRd;
     }
 }

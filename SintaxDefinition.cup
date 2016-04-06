@@ -3,7 +3,7 @@ import java_cup.runtime.*;
 import mercury.arm.instruction.LabelStatement;
 import java.util.ArrayList;
 import java.util.List;
-import mercury.arm.instruction.Constants;
+import mercury.arm.Constants;
 
 
     action code{:
@@ -88,7 +88,7 @@ import mercury.arm.instruction.Constants;
         se lista los no terminales que tienen un entero. Un Object se refiere a que
         no tienen tipo, pudiendo ser entero o String. */
 
-     non terminal Object     PROGRAM, STATEMENT, INSTRUCTION, DATAPROCESSING, MEMORY, DPADDR, RELATIVEADDR, CMVADDR, MLAADDR, MULADDR, RRXADDR,SHIFTADDR, SHAMT5;
+     non terminal Object     PROGRAM, STATEMENT, INSTRUCTION, DATAPROCESSING, MEMORY, DPADDR, RELATIVEADDR, CMVADDR, MLAADDR,MOVADDR, MULADDR, RRXADDR,SHIFTADDR, SHAMT5;
      non terminal String     NORMALADDR, DPMNEMONIC, CMPMNEMONIC, MVMNEMONIC, MLAMNEMONIC, MEMMNEMONIC, IMMEDIATE,MULMNEMONIC,RRXMNEMONIC,SHIFTMNEMONIC;
 
      /* ------------------- Seccion de la gramatica ------------------------ */
@@ -162,13 +162,13 @@ PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
                    branch:bmnemonic calllabel:calledLabel{:
                                                          statement.setInstructionType(Constants.B_TYPE);
                                                          statement.setMnemonic(bmnemonic);
-                                                         statement.setCalledLabel(calledLabel);
+                                                         statement.setCallLabel(calledLabel);
                                                          statement.setLine(calledLabelleft+1);
                                                          if(bmnemonic.length()>1){
                                                             statement.setHasConditionalSufix(true);
                                                          }
                                                          :};
-  DATAPROCESSING ::= DPMNEMONIC DPADDR | CMPMNEMONIC CMVADDR | MVMNEMONIC CMVADDR |
+  DATAPROCESSING ::= DPMNEMONIC DPADDR | CMPMNEMONIC CMVADDR | MVMNEMONIC MOVADDR |
                          MLAMNEMONIC MLAADDR |MULMNEMONIC MULADDR|RRXMNEMONIC RRXADDR| SHIFTMNEMONIC SHIFTADDR;
   MEMORY ::= MEMMNEMONIC register:Reg1 comma RELATIVEADDR{:
                                                           statement.setRd(Reg1);
@@ -198,7 +198,17 @@ PROGRAM ::= PROGRAM STATEMENT| STATEMENT;
                                                                   statement.setRn(Rn);
                                                                   statement.setRm(Rm);
                                                                   :};
-  CMVADDR ::= NORMALADDR{:statement.setAddressingMode(Constants.DP_CMV_REG_ADDRESSING);:} |
+  MOVADDR ::= register:r1 comma register:r2{:statement.setAddressingMode(Constants.DP_CMV_REG_ADDRESSING);
+                                             statement.setRd(r1);
+                                             statement.setRm(r2);
+                                            :} |
+                register:Reg1 comma IMMEDIATE{:statement.setRn(Reg1);
+                                               statement.setAddressingMode(Constants.DP_CMV_IMM_ADDRESSING);
+                                              :};
+  CMVADDR ::= register:r1 comma register:r2{:statement.setAddressingMode(Constants.DP_CMV_REG_ADDRESSING);
+                                                           statement.setRn(r1);
+                                                           statement.setRm(r2);
+                                                          :} |
               register:Reg1 comma IMMEDIATE{:statement.setRn(Reg1);
                                              statement.setAddressingMode(Constants.DP_CMV_IMM_ADDRESSING);
                                             :};
