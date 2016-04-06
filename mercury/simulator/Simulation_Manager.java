@@ -140,7 +140,6 @@ public class Simulation_Manager {
         }
     }
 
-
     private void Mov(ProgramStatement instruction) {
         String addrMode = instruction.getAddressingMode();
         Register result = bankOfRegisters.getRegisterByName(instruction.getRd());

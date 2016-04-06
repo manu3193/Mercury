@@ -376,7 +376,15 @@ public class GUIController implements Initializable {
     private void handleNewButtonAction(ActionEvent event) {
         if(file!=null){
         SaveFile(textArea.getText(), file);
+            initComboBoxes();
+            initRegisterTextField();
+            initTable();
+            assembleResultLbl.setVisible(false);
+            assembleResultLbl.setText("");
+            textArea.clear();
+            outputTextArea.clear();
         }else{
+
         initComboBoxes();
         initRegisterTextField();
         initTable();
@@ -567,7 +575,8 @@ public class GUIController implements Initializable {
     }
 
     @FXML
-    private void handleLogButtonAction(ActionEvent event) {
+    private void handleLogButtonAction(ActionEvent event)
+    {
         System.out.println("Opening log...");
     }
 
