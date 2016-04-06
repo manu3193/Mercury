@@ -1,5 +1,7 @@
 package mercury.arm.instruction;
 
+import mercury.arm.Constants;
+
 /**
  * Created by manzumbado on 03/04/16.
  */

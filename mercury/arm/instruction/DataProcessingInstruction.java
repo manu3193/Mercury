@@ -17,7 +17,7 @@ public abstract class DataProcessingInstruction {
         return mCond;
     }
 
-    protected void setCond(String mCond) {
+    public void setCond(String mCond) {
         this.mCond = mCond;
     }
 
@@ -37,7 +37,7 @@ public abstract class DataProcessingInstruction {
         return mCmd;
     }
 
-    protected void setCmd(String mCmd) {
+    public void setCmd(String mCmd) {
         this.mCmd = mCmd;
     }
 
@@ -45,7 +45,7 @@ public abstract class DataProcessingInstruction {
         return mS;
     }
 
-    protected void setS(String mS) {
+    public void setS(String mS) {
         this.mS = mS;
     }
 
@@ -53,7 +53,7 @@ public abstract class DataProcessingInstruction {
         return mRn;
     }
 
-    protected void setRn(String mRn) {
+    public void setRn(String mRn) {
         this.mRn = mRn;
     }
 
@@ -61,7 +61,7 @@ public abstract class DataProcessingInstruction {
         return mRd;
     }
 
-    protected void setRd(String mRd) {
+    public void setRd(String mRd) {
         this.mRd = mRd;
     }
 }

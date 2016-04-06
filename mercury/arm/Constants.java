@@ -41,6 +41,10 @@ public final class Constants {
     //Error message types
     public static final String PROGRAM_MEMORY_ADDRESSING_ERROR="PROGRAM_MEM_ERROR";
     public static final String PROGRAM_LABEL_ADDRESSING_ERROR="PROGRAM_LABEL_ERROR";
+    public static final String PROGRAM_IMM8_NOT_VALID="IMM8_NOT_VALID";
+    public static final String PROGRAM_SHAMT5_NOT_VALID="SHAMT_NOT_VALID";
+    public static final String PROGRAM_IMM12_NOT_VALID="IMM12_NOT_VALID";
+    public static final String PROGRAM_IMM24_NOT_VALID="IMM24_NOT_VALID";
 
     //Instruction Mnemonics
     public static final String AND_MNEMONIC="AND";

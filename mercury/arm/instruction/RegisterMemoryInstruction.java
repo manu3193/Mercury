@@ -1,5 +1,7 @@
 package mercury.arm.instruction;
 
+import mercury.arm.Constants;
+
 /**
  * Created by manzumbado on 03/04/16.
  */
@@ -13,6 +15,7 @@ public class RegisterMemoryInstruction extends MemoryInstruction implements IBas
     public RegisterMemoryInstruction(){
         super.setP(Constants.PREINDEX_CONTROL_BIT_HIGH);
         super.setW(Constants.WRITEBACK_CONTROL_BIT_LOW);
+        super.setI("1");
     }
     public String getShamt5() {
         return mShamt5;
@@ -44,6 +47,6 @@ public class RegisterMemoryInstruction extends MemoryInstruction implements IBas
 
     @Override
     public String getBinaryInstruction() {
-        return null;
+        return getCond()+getOp()+getI()+getP()+getU()+getB()+getW()+getL()+getRn()+getRd()+getShamt5()+getSh()+getBit4()+getRm();
     }
 }

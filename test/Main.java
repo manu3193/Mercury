@@ -5,8 +5,10 @@ package test;
  */
 
 import mercury.ARMProgram;
+import mercury.ErrorList;
 import mercury.LexicalAnalysis;
 import mercury.SyntaxAnalysis;
+import mercury.arm.assembler.Assembler;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -85,9 +87,12 @@ public class Main {
                         LexicalAnalysis lexicalAnalysis= new LexicalAnalysis( new FileReader(program.getFilename()));
                         SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
                         Object result = synAnalysis.parse().value;
-                        program.setErrorList(lexicalAnalysis.getErrorList().append(synAnalysis.getErrorList()));
+                        ErrorList programErrorList = lexicalAnalysis.getErrorList().append(synAnalysis.getErrorList());
+                        program.setErrorList(programErrorList);
                         program.setSetLabelList(synAnalysis.getLabelStatementList());
                         program.setStatementList(synAnalysis.getStatementList());
+                        Assembler assembler = new Assembler();
+                        assembler.Assemble(program);
 
                     } catch (IOException e) {
                         e.printStackTrace();
