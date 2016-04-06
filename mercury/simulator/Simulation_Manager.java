@@ -52,10 +52,12 @@ public class Simulation_Manager {
                     case Constants.EOR_MNEMONIC:
                         break;
                     case Constants.SUB_MNEMONIC:
+                        Sub(currentStatement);
                         break;
                     case Constants.RSB_MNEMONIC:
                         break;
                     case Constants.ADD_MNEMONIC:
+                        Add(currentStatement);
                         break;
                     case Constants.ADC_MNEMONIC:
                         break;
@@ -70,6 +72,7 @@ public class Simulation_Manager {
                     case Constants.ORR_MNEMONIC:
                         break;
                     case Constants.MOV_MNEMONIC:
+                        Mov(currentStatement);
                         break;
                     case Constants.LSL_MNEMONIC:
                         break;
@@ -88,8 +91,10 @@ public class Simulation_Manager {
                     case Constants.MLA_MNEMONIC:
                         break;
                     case Constants.STR_MNEMONIC:
+                        Str(currentStatement);
                         break;
                     case Constants.LDR_MNEMONIC:
+                        Ldr(currentStatement);
                         break;
                     case Constants.STRB_MNEMONIC:
                         break;
@@ -140,6 +145,143 @@ public class Simulation_Manager {
         }
         if (numResult.intValue() == 0) {
             cpsr.setZero(true);
+        }
+
+    }
+
+    private void Mov(ProgramStatement instruction) {
+        String addrMode = instruction.getAddressingMode();
+        Register result = bankOfRegisters.getRegisterByName(instruction.getRd());
+        switch (addrMode) {
+            case Constants.DP_CMV_REG_ADDRESSING:
+                String operand2 = instruction.getRm();
+                result.setValue(operand2);
+                if (instruction.HasSetFlagsSufix()) {
+                    AndS(new BigInteger(operand2), operand2);
+                }
+
+                break;
+            case Constants.DP_CMV_IMM_ADDRESSING:
+                String op2 = instruction.getImm();
+                result.setValue(op2);
+                if (instruction.HasSetFlagsSufix()) {
+                    AndS(new BigInteger(op2), op2);
+                }
+                break;
+        }
+    }
+
+    private void Str(ProgramStatement instruction) {
+        String addrMode = instruction.getAddressingMode();
+        Register rn = bankOfRegisters.getRegisterByName(instruction.getRn());
+        Register rd = bankOfRegisters.getRegisterByName(instruction.getRd());
+        switch (addrMode) {
+            case Constants.MEM_OFFSET_IMM_ADDRESSING:
+                String immediate = instruction.getImm();
+                BigInteger base = new BigInteger(rn.getValue());
+                BigInteger offset = new BigInteger(immediate);
+                BigInteger index = base.add(offset);
+                memoryArray[index.intValue()] = rd.getValue();
+                break;
+            case Constants.MEM_OFFSET_REG_ADDRESSING:
+                Register rm = bankOfRegisters.getRegisterByName(instruction.getRm());
+                BigInteger source = new BigInteger(rn.getValue());
+                BigInteger rmVal = new BigInteger(rm.getValue());
+                BigInteger memPos = source.add(rmVal);
+                memoryArray[memPos.intValue()] = rd.getValue();
+                break;
+            case Constants.MEM_REG_ADDRESSING:
+                BigInteger baseReg = new BigInteger(rn.getValue());
+                memoryArray[baseReg.intValue()] = rd.getValue();
+                break;
+        }
+    }
+
+    private void Ldr(ProgramStatement instruction) {
+        String addrMode = instruction.getAddressingMode();
+        Register rn = bankOfRegisters.getRegisterByName(instruction.getRn());
+        Register rd = bankOfRegisters.getRegisterByName(instruction.getRd());
+        switch (addrMode) {
+            case Constants.MEM_OFFSET_IMM_ADDRESSING:
+                String immediate = instruction.getImm();
+                BigInteger base = new BigInteger(rn.getValue());
+                BigInteger offset = new BigInteger(immediate);
+                BigInteger index = base.add(offset);
+                String val = memoryArray[index.intValue()];
+                rd.setValue(val);
+                break;
+            case Constants.MEM_OFFSET_REG_ADDRESSING:
+                Register rm = bankOfRegisters.getRegisterByName(instruction.getRm());
+                BigInteger source = new BigInteger(rn.getValue());
+                BigInteger rmVal = new BigInteger(rm.getValue());
+                BigInteger memPos = source.add(rmVal);
+                String result = memoryArray[memPos.intValue()];
+                rd.setValue(result);
+                break;
+            case Constants.MEM_REG_ADDRESSING:
+                BigInteger baseReg = new BigInteger(rn.getValue());
+                String baseRegVal = memoryArray[baseReg.intValue()];
+                rd.setValue(baseRegVal);
+                break;
+        }
+    }
+
+    private void Add(ProgramStatement instruction) {
+        String addrMode = instruction.getAddressingMode();
+        Register op1 = bankOfRegisters.getRegisterByName(instruction.getRn());
+        BigInteger op1val = new BigInteger(op1.getValue());
+        Register result = bankOfRegisters.getRegisterByName(instruction.getRd());
+        switch (addrMode) {
+            case Constants.DP_NORMAL_ADDRESING:
+                Register op2 = bankOfRegisters.getRegisterByName(instruction.getRm());
+                BigInteger op2val = new BigInteger(op2.getValue());
+                BigInteger res = op1val.add(op2val);
+                String add = res.toString();
+                result.setValue(add);
+                if (instruction.HasSetFlagsSufix()) {
+                    AndS(res, add);
+                }
+                break;
+
+            case Constants.DP_IMM_ADDRESSING:
+                String immediate = instruction.getImm();
+                BigInteger secondOperand = new BigInteger(immediate);
+                BigInteger immResult = op1val.add(secondOperand);
+                String strImmResult = immResult.toString();
+                result.setValue(strImmResult);
+                if (instruction.HasSetFlagsSufix()) {
+                    AndS(immResult, strImmResult);
+                }
+                break;
+        }
+    }
+
+    private void Sub(ProgramStatement instruction) {
+        String addrMode = instruction.getAddressingMode();
+        Register op1 = bankOfRegisters.getRegisterByName(instruction.getRn());
+        BigInteger op1val = new BigInteger(op1.getValue());
+        Register result = bankOfRegisters.getRegisterByName(instruction.getRd());
+        switch (addrMode) {
+            case Constants.DP_NORMAL_ADDRESING:
+                Register op2 = bankOfRegisters.getRegisterByName(instruction.getRm());
+                BigInteger op2val = new BigInteger(op2.getValue());
+                BigInteger res = op1val.subtract(op2val);
+                String sub = res.toString();
+                result.setValue(sub);
+                if (instruction.HasSetFlagsSufix()) {
+                    AndS(res, sub);
+                }
+                break;
+            case Constants.DP_IMM_ADDRESSING:
+                String immediate = instruction.getImm();
+                BigInteger secondOperand = new BigInteger(immediate);
+                BigInteger immResult = op1val.subtract(secondOperand);
+                String subtraction = immResult.toString();
+                result.setValue(subtraction);
+                if (instruction.HasSetFlagsSufix()) {
+                    AndS(immResult, subtraction);
+                }
+                break;
         }
     }
 
