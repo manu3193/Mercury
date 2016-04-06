@@ -9,7 +9,7 @@ public class Memory {
      * From position index: 0 to 4095 => Program Memory.
      *                      4096 to 8192 => Data Memory.
      */
-    public String[] memoryArray;
+    private String[] memoryArray;
     private static final int MEMORY_SIZE = 8192;
 
     public Memory(){
@@ -22,5 +22,13 @@ public class Memory {
         for(int i = 0; i< MEMORY_SIZE; i++){
             memoryArray[i] = initialValue;
         }
+    }
+
+    public String[] getMemoryArray() {
+        return memoryArray;
+    }
+
+    public void setMemoryArray(String[] memoryArray) {
+        this.memoryArray = memoryArray;
     }
 }
