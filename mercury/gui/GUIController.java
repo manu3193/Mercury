@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import mercury.*;
+import mercury.arm.assembler.Assembler;
 import mercury.arm.hardware.Memory;
 
 import java.awt.*;
@@ -522,8 +523,9 @@ public class GUIController implements Initializable {
         }else {
             try {
                 assembleResultLbl.setVisible(true);
-
                 mainProgram= new ARMProgram(file.getAbsolutePath());
+                Assembler assembler = new Assembler();
+
                 LexicalAnalysis lexicalAnalysis= new LexicalAnalysis( new FileReader(mainProgram.getFilename()));
                 SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
                 Object result = synAnalysis.parse().value;
@@ -532,7 +534,7 @@ public class GUIController implements Initializable {
                 mainProgram.setSetLabelList(synAnalysis.getLabelStatementList());
                 mainProgram.setStatementList(synAnalysis.getStatementList());
 
-               //mainProgram.assemble();
+                assembler.Assemble(mainProgram);
 
                 ErrorList errorList = lexicalAnalysis.getErrorList();
                 errorList.append(synAnalysis.getErrorList());
