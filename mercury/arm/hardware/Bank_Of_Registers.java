@@ -13,7 +13,7 @@ public class Bank_Of_Registers {
         initializeRegisters();
     }
 
-    public Bank_Of_Registers(Register [] bankOfRegisters){
+    public Bank_Of_Registers(Register[] bankOfRegisters) {
         registerArray = bankOfRegisters;
     }
 
@@ -56,6 +56,16 @@ public class Bank_Of_Registers {
     public Register[] getRegisterArray() {
         return registerArray;
     }
+
+    public Register getRegisterByName(String regName) {
+        Register result = new Register();
+        for (Register register : registerArray) {
+            if (regName.equals(register.getName())) ;
+            result = register;
+        }
+        return result;
+    }
+
 
     public void setRegisterArray(Register[] registerArray) {
         this.registerArray = registerArray;
