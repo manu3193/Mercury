@@ -523,31 +523,34 @@ public class GUIController implements Initializable {
         }else {
             try {
                 assembleResultLbl.setVisible(true);
+                String[] filearrray={file.getAbsolutePath()};
                 mainProgram= new ARMProgram(file.getAbsolutePath());
-                Assembler assembler = new Assembler();
 
                 LexicalAnalysis lexicalAnalysis= new LexicalAnalysis( new FileReader(mainProgram.getFilename()));
                 SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
                 Object result = synAnalysis.parse().value;
-
-                mainProgram.setErrorList(lexicalAnalysis.getErrorList().append(synAnalysis.getErrorList()));
+                ErrorList programErrorList = lexicalAnalysis.getErrorList().append(synAnalysis.getErrorList());
+                mainProgram.setErrorList(programErrorList);
                 mainProgram.setSetLabelList(synAnalysis.getLabelStatementList());
                 mainProgram.setStatementList(synAnalysis.getStatementList());
-
+                Assembler assembler = new Assembler();
                 assembler.Assemble(mainProgram);
+                if(programErrorList!=assembler.getErrorList()){
+                    programErrorList.append(assembler.getErrorList());
+                }
 
-                ErrorList errorList = lexicalAnalysis.getErrorList();
-                errorList.append(synAnalysis.getErrorList());
 
-                if (errorList.getErrors().isEmpty()) {
+                if (programErrorList.getErrors().isEmpty()) {
                     outputTextArea.appendText("No errors found.");
                     assembleResultLbl.setText("Assemble Successful.");
                 } else {
-                    for (ErrorMessage e : errorList.getErrors()
+                    for (ErrorMessage e : programErrorList.getErrors()
                             ) {
-                        outputTextArea.appendText(e.getType().concat(" in line: ").
-                                concat(String.valueOf(e.getLine())).concat(", position: ").concat(String.valueOf(e.getPos()))
-                                .concat(".").concat("\n"));
+                        String error =e.getType().concat(" in line: ").concat(String.valueOf(e.getLine())).concat(", position: ").concat(String.valueOf(e.getPos()))
+                                .concat(".").concat("\n");
+                        if(e.getMessage()!=null)
+                            error.concat(e.getMessage()).concat("\n");
+                        outputTextArea.appendText(error);
                     }
                     assembleResultLbl.setText("Build failed.");
                     outputTextArea.setEditable(false);

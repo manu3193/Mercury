@@ -42,6 +42,7 @@ public class Assembler {
         mnemonicHashMap=initMnemonicHashmap();
         shiftHashMap=initshHashrHash();
         memOpHashmap=initMemOpHashMap();
+
     }
 
     private HashMap<String,String> initRegisterHash(){
