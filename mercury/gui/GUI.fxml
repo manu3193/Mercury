@@ -43,9 +43,9 @@
         </VBox>
     </top>
     <bottom>
-        <HBox spacing="50.0" style="-fx-background-color: #AB4642;" BorderPane.alignment="CENTER">
+        <HBox spacing="50.0" style="-fx-background-color: #66C3C8;" BorderPane.alignment="CENTER">
             <children>
-                <Label id="assembleResultLbl" fx:id="assembleResultLbl" text="Label" visible="false" />
+                <Label id="assembleResultLbl" fx:id="assembleResultLbl" visible="false" />
                 <Region HBox.hgrow="ALWAYS" />
                 <Button fx:id="logButton" alignment="TOP_CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#handleLogButtonAction" text="View Log" HBox.hgrow="ALWAYS" />
             </children>

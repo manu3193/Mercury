@@ -66,6 +66,7 @@ public class Simulation_Manager {
                     case Constants.RSC_MNEMONIC:
                         break;
                     case Constants.CMP_MNEMONIC:
+                        Cmp(currentStatement);
                         break;
                     case Constants.CMN_MNEMONIC:
                         break;
@@ -122,7 +123,7 @@ public class Simulation_Manager {
                 String and = res.toString();
                 result.setValue(and);
                 if (instruction.HasSetFlagsSufix()) {
-                    AndS(res, and);
+                    setFlags(res);
                 }
                 break;
 
@@ -133,44 +134,68 @@ public class Simulation_Manager {
                 String strImmResult = immResult.toString();
                 result.setValue(strImmResult);
                 if (instruction.HasSetFlagsSufix()) {
-                    AndS(immResult, strImmResult);
+                   setFlags(immResult);
                 }
                 break;
         }
     }
 
-    private void AndS(BigInteger numResult, String strResult) {
-        if (strResult.charAt(0) == 1) {
-            cpsr.setNegative(true);
-        }
-        if (numResult.intValue() == 0) {
-            cpsr.setZero(true);
-        }
-
-    }
 
     private void Mov(ProgramStatement instruction) {
         String addrMode = instruction.getAddressingMode();
         Register result = bankOfRegisters.getRegisterByName(instruction.getRd());
         switch (addrMode) {
             case Constants.DP_CMV_REG_ADDRESSING:
-                String operand2 = instruction.getRm();
-                result.setValue(operand2);
+                Register operand2 = bankOfRegisters.getRegisterByName(instruction.getRm());
+                result.setValue(operand2.getValue());
+                BigInteger res = new BigInteger(operand2.getValue());
                 if (instruction.HasSetFlagsSufix()) {
-                    AndS(new BigInteger(operand2), operand2);
+                   setFlags(res);
                 }
-
                 break;
             case Constants.DP_CMV_IMM_ADDRESSING:
                 String op2 = instruction.getImm();
+                BigInteger r = new BigInteger(op2);
                 result.setValue(op2);
                 if (instruction.HasSetFlagsSufix()) {
-                    AndS(new BigInteger(op2), op2);
+                setFlags(r);
                 }
                 break;
         }
     }
 
+    private void Cmp(ProgramStatement instruction){
+        String addrMode = instruction.getAddressingMode();
+        Register operand1 = bankOfRegisters.getRegisterByName(instruction.getRn());
+        BigInteger val1= new BigInteger(operand1.getValue());
+        switch (addrMode) {
+            case Constants.DP_CMV_REG_ADDRESSING:
+                Register operand2 = bankOfRegisters.getRegisterByName(instruction.getRm());
+                BigInteger val2 = new BigInteger(operand2.getValue());
+                BigInteger difference = val1.subtract(val2);
+                setFlags(difference);
+                break;
+            case Constants.DP_CMV_IMM_ADDRESSING:
+                BigInteger op2 = new BigInteger(instruction.getImm());
+                BigInteger resta = val1.subtract(op2);
+                setFlags(resta);
+                break;
+        }
+    }
+
+    private void setFlags(BigInteger result){
+        if (result.signum() == -1) {
+            cpsr.setNegative(true);
+        }
+        if (result.signum() == 0) {
+            cpsr.setZero(true);
+        } if (result.signum() == 1){
+            cpsr.setCarry(true);
+        } if(result.bitCount()>32){
+            cpsr.setOverflow(true);
+
+        }
+    }
     private void Str(ProgramStatement instruction) {
         String addrMode = instruction.getAddressingMode();
         Register rn = bankOfRegisters.getRegisterByName(instruction.getRn());
@@ -239,7 +264,7 @@ public class Simulation_Manager {
                 String add = res.toString();
                 result.setValue(add);
                 if (instruction.HasSetFlagsSufix()) {
-                    AndS(res, add);
+                    setFlags(res);
                 }
                 break;
 
@@ -250,7 +275,7 @@ public class Simulation_Manager {
                 String strImmResult = immResult.toString();
                 result.setValue(strImmResult);
                 if (instruction.HasSetFlagsSufix()) {
-                    AndS(immResult, strImmResult);
+                    setFlags(immResult);
                 }
                 break;
         }
@@ -269,7 +294,7 @@ public class Simulation_Manager {
                 String sub = res.toString();
                 result.setValue(sub);
                 if (instruction.HasSetFlagsSufix()) {
-                    AndS(res, sub);
+                    setFlags(res);
                 }
                 break;
             case Constants.DP_IMM_ADDRESSING:
@@ -279,7 +304,7 @@ public class Simulation_Manager {
                 String subtraction = immResult.toString();
                 result.setValue(subtraction);
                 if (instruction.HasSetFlagsSufix()) {
-                    AndS(immResult, subtraction);
+                   setFlags(immResult);
                 }
                 break;
         }

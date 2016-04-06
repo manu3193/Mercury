@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -17,18 +16,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import mercury.ErrorList;
-import mercury.ErrorMessage;
-import mercury.LexicalAnalysis;
-import mercury.SyntaxAnalysis;
+import mercury.*;
+import mercury.arm.hardware.Memory;
 
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.*;
 import java.util.logging.Level;
@@ -40,8 +34,11 @@ import java.util.logging.Logger;
 public class GUIController implements Initializable {
 
     @FXML
-    private static final int N = 1024;
+    private static final int N = 2048;
 
+    @FXML
+    private static final ObservableList<mercury.gui.Memory> memoryAddress = FXCollections.observableArrayList();
+    ;
     @FXML
     public Label assembleResultLbl;
 
@@ -186,7 +183,7 @@ public class GUIController implements Initializable {
     public TextField txtFieldEndAddress;
 
     @FXML
-    public TableView<Memory> tableView;
+    public TableView<mercury.gui.Memory> tableView;
 
     @FXML
     public TableColumn<Memory, String> colWordAddress;
@@ -252,7 +249,10 @@ public class GUIController implements Initializable {
     private File file;
 
     @FXML
-    Stage stage;
+    private Memory mainMemory;
+
+    @FXML
+    private ARMProgram mainProgram;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -260,6 +260,7 @@ public class GUIController implements Initializable {
         desktop = Desktop.getDesktop();
         configureOpenDialog();
         configureSaveDialog();
+        mainMemory = new Memory();
         /*Initialize combo boxes for all registers. */
         initComboBoxes();
         /*Set text fields as not editable.*/
@@ -361,12 +362,11 @@ public class GUIController implements Initializable {
 
     }
 
-    private ObservableList<Memory> fillTable() {
-        ObservableList<Memory> memoryAddress = FXCollections.observableArrayList();
-        Memory mem = new Memory();
+    private ObservableList<mercury.gui.Memory> fillTable() {
+        mercury.gui.Memory mem = new mercury.gui.Memory();
         for (int i = 0; i < N; i++) {
             mem.setRow(i);
-            memoryAddress.add(new Memory());
+            memoryAddress.add(new mercury.gui.Memory());
 
         }
         return memoryAddress;
@@ -374,7 +374,16 @@ public class GUIController implements Initializable {
 
     @FXML
     private void handleNewButtonAction(ActionEvent event) {
+        if(file!=null){
+        SaveFile(textArea.getText(), file);
+        }else{
+        initComboBoxes();
+        initRegisterTextField();
+        initTable();
+        assembleResultLbl.setVisible(false);
+        assembleResultLbl.setText("");
         textArea.clear();
+        outputTextArea.clear();}
     }
 
     @FXML
@@ -385,6 +394,7 @@ public class GUIController implements Initializable {
                 setContentTextArea(file);
                 assembleResultLbl.setVisible(true);
                 assembleResultLbl.setText("File opened.");
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -464,6 +474,20 @@ public class GUIController implements Initializable {
     }
 
     @FXML
+    private void SaveFileNotClose(String content, File file){
+        try {
+            FileWriter fileWriter;
+            fileWriter = new FileWriter(file);
+            fileWriter.write(content);
+            fileWriter.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(
+                    Mercury.class.getName()).log(
+                    Level.SEVERE, null, ex
+            );
+        }
+    }
+    @FXML
 
     private void setTextArea(TextArea textarea, String content) {
         new Thread(new Runnable() {
@@ -481,39 +505,52 @@ public class GUIController implements Initializable {
 
     @FXML
     private void handleAssembleButtonAction(ActionEvent event) {
-        System.out.println("Assembling!");
         outputTextArea.setEditable(true);
         outputTextArea.clear();
-        try {        assembleResultLbl.setVisible(true);
+        if (file == null) {
+            file = saveDialog.showSaveDialog(newButton.getScene().getWindow());
+            SaveFileNotClose(textArea.getText(), file);
+            mainProgram = new ARMProgram(file.getAbsolutePath());
+        }else {
+            try {
+                assembleResultLbl.setVisible(true);
 
-            FileReader newFile = new FileReader(file);
-            LexicalAnalysis lexicalAnalysis = new LexicalAnalysis(newFile);
-            SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
+                mainProgram= new ARMProgram(file.getAbsolutePath());
+                LexicalAnalysis lexicalAnalysis= new LexicalAnalysis( new FileReader(mainProgram.getFilename()));
+                SyntaxAnalysis synAnalysis = new SyntaxAnalysis(lexicalAnalysis);
+                Object result = synAnalysis.parse().value;
 
-            Object result = synAnalysis.parse().value;
-            ErrorList errorList = lexicalAnalysis.getErrorList();
-            errorList.append(synAnalysis.getErrorList());
-            if (errorList.getErrors().isEmpty()) {
-                outputTextArea.appendText("No errors found.");
-                assembleResultLbl.setText("Assemble Successful.");
-            } else {
-                for (ErrorMessage e : errorList.getErrors()
-                        ) {
-                    outputTextArea.appendText(e.getType().concat(" in line: ").
-                            concat(String.valueOf(e.getLine())).concat(", position: ").concat(String.valueOf(e.getPos()))
-                            .concat(".").concat("\n"));
+                mainProgram.setErrorList(lexicalAnalysis.getErrorList().append(synAnalysis.getErrorList()));
+                mainProgram.setSetLabelList(synAnalysis.getLabelStatementList());
+                mainProgram.setStatementList(synAnalysis.getStatementList());
+
+               //mainProgram.assemble();
+
+                ErrorList errorList = lexicalAnalysis.getErrorList();
+                errorList.append(synAnalysis.getErrorList());
+
+                if (errorList.getErrors().isEmpty()) {
+                    outputTextArea.appendText("No errors found.");
+                    assembleResultLbl.setText("Assemble Successful.");
+                } else {
+                    for (ErrorMessage e : errorList.getErrors()
+                            ) {
+                        outputTextArea.appendText(e.getType().concat(" in line: ").
+                                concat(String.valueOf(e.getLine())).concat(", position: ").concat(String.valueOf(e.getPos()))
+                                .concat(".").concat("\n"));
+                    }
+                    assembleResultLbl.setText("Build failed.");
+                    outputTextArea.setEditable(false);
                 }
-                assembleResultLbl.setText("Build failed.");
-                outputTextArea.setEditable(false);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -521,6 +558,7 @@ public class GUIController implements Initializable {
     private void handleSimulateButtonAction(ActionEvent event) {
         System.out.println("Simulating");
     }
+
 
     @FXML
     private void onActionMenuClose(ActionEvent event) {
@@ -537,7 +575,6 @@ public class GUIController implements Initializable {
     private void handleComboBox0(ActionEvent event) {
         String selectedValue = comboBox0.getValue();
         System.out.println("Selected value:" + selectedValue);
-
     }
 
     @FXML
